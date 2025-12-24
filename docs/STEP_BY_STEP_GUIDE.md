@@ -1,618 +1,794 @@
-# CBSE Learning Platform - Complete Step-by-Step Implementation Guide
+# CBSE Learning Platform - Complete 4W+H Implementation Guide
 
-This guide walks you through every single step to deploy the CBSE Learning Platform on Google Cloud Platform (GCP), starting from creating a Google account. No prior GCP experience required.
+A comprehensive step-by-step guide using the 4W+H framework (What, Why, When, Where, How) for implementing and deploying the CBSE Learning Platform on Google Cloud Platform.
 
 ---
 
 ## Table of Contents
 
-1. [Prerequisites](#1-prerequisites)
-2. [Create Google Account](#2-create-google-account)
-3. [Create GCP Account](#3-create-gcp-account)
-4. [Set Up Billing](#4-set-up-billing)
-5. [Create GCP Project](#5-create-gcp-project)
-6. [Set Budget Alerts](#6-set-budget-alerts)
-7. [Install Required Tools](#7-install-required-tools)
-8. [Clone the Repository](#8-clone-the-repository)
-9. [Enable GCP APIs](#9-enable-gcp-apis)
-10. [Create Artifact Registry](#10-create-artifact-registry)
-11. [Build Docker Image](#11-build-docker-image)
-12. [Push Image to Registry](#12-push-image-to-registry)
-13. [Deploy to Cloud Run](#13-deploy-to-cloud-run)
-14. [Test the Deployment](#14-test-the-deployment)
-15. [Set Up Firebase Authentication](#15-set-up-firebase-authentication)
-16. [Set Up Firestore Database](#16-set-up-firestore-database)
-17. [Set Up Cloud Storage](#17-set-up-cloud-storage)
-18. [Configure Vertex AI](#18-configure-vertex-ai)
-19. [Set Up CI/CD](#19-set-up-cicd)
-20. [Upload NCERT PDFs](#20-upload-ncert-pdfs)
-21. [Monitor and Maintain](#21-monitor-and-maintain)
-22. [Troubleshooting](#22-troubleshooting)
+1. [Executive Summary: 4W+H Overview](#executive-summary-4wh-overview)
+2. [Phase 1: Account Creation](#phase-1-account-creation)
+3. [Phase 2: Project Setup](#phase-2-project-setup)
+4. [Phase 3: Tool Installation](#phase-3-tool-installation)
+5. [Phase 4: Repository Setup](#phase-4-repository-setup)
+6. [Phase 5: Container Registry](#phase-5-container-registry)
+7. [Phase 6: Cloud Run Deployment](#phase-6-cloud-run-deployment)
+8. [Phase 7: Firebase Setup](#phase-7-firebase-setup)
+9. [Phase 8: Database Configuration](#phase-8-database-configuration)
+10. [Phase 9: Storage Setup](#phase-9-storage-setup)
+11. [Phase 10: AI Configuration](#phase-10-ai-configuration)
+12. [Phase 11: CI/CD Pipeline](#phase-11-cicd-pipeline)
+13. [Phase 12: Content Upload](#phase-12-content-upload)
+14. [Phase 13: Monitoring](#phase-13-monitoring)
+15. [Troubleshooting Reference](#troubleshooting-reference)
 
 ---
 
-## 1. Prerequisites
+## Executive Summary: 4W+H Overview
 
-Before starting, ensure you have:
+### WHAT is this project?
 
-- A computer with internet access
-- A valid phone number for verification
-- A debit/credit card OR UPI (for Indian users) - required for GCP billing verification
-- Basic familiarity with using a terminal/command prompt
+The CBSE Learning Platform is an AI-powered educational application designed for Indian students studying under the Central Board of Secondary Education (CBSE) curriculum for grades 6-10. The platform provides:
 
-**Time Required**: 2-4 hours for complete setup
+| Feature | Description |
+|---------|-------------|
+| AI Quiz Generation | Automatically generate quizzes aligned with CBSE syllabus |
+| Doubt Clearing | Instant AI-powered explanations for student questions |
+| Progress Tracking | Monitor learning advancement with gamification |
+| Student Modes | Adaptive content for Dull/Average/Clever learners |
+| Real-World Applications | Situated Cognition Theory implementation |
 
-**Budget**: 0-1000 INR/month (can run entirely on free tier)
+### WHY deploy this platform?
 
----
+| Benefit | Explanation |
+|---------|-------------|
+| Cost-Effective | 90%+ savings using Firebase + Replicate vs traditional cloud |
+| Scalable | Cloud Run auto-scales from 0 to handle any load |
+| CBSE-Aligned | Content matches official NCERT curriculum |
+| AI-Powered | Modern LLMs provide personalized learning |
+| Free Tier Friendly | Can run entirely on GCP/Firebase free tiers |
 
-## 2. Create Google Account
+### WHEN to use this guide?
 
-If you already have a Google account (Gmail), skip to [Step 3](#3-create-gcp-account).
+| Scenario | Recommended Action |
+|----------|-------------------|
+| New to GCP | Start from Phase 1 (Account Creation) |
+| Have GCP Account | Start from Phase 2 (Project Setup) |
+| Have Project Ready | Start from Phase 5 (Container Registry) |
+| Updating Existing | Jump to specific phase as needed |
 
-### Step 2.1: Go to Google Account Creation Page
+**Time Required**: 2-4 hours for complete setup from scratch
 
-1. Open your web browser
-2. Go to: https://accounts.google.com/signup
-3. You will see the "Create your Google Account" page
+### WHERE are components deployed?
 
-### Step 2.2: Enter Your Information
+| Component | Service | Location |
+|-----------|---------|----------|
+| Backend API | Cloud Run | asia-south1 (Mumbai) |
+| Container Images | Artifact Registry | asia-south1 |
+| User Database | Firestore | asia-south1 |
+| Authentication | Firebase Auth | Global |
+| File Storage | Cloud Storage | asia-south1 |
+| AI Processing | Replicate/Vertex AI | US/Global |
+| Secrets | Secret Manager | Global |
 
-1. **First name**: Enter your first name
-2. **Last name**: Enter your last name
-3. Click **Next**
+### HOW does the system work?
 
-### Step 2.3: Enter Basic Information
-
-1. **Birthday**: Select your date of birth
-2. **Gender**: Select your gender
-3. Click **Next**
-
-### Step 2.4: Choose Your Email Address
-
-1. You can either:
-   - Create a new Gmail address (recommended)
-   - Use your existing email address
-2. If creating new Gmail:
-   - Enter your desired username (e.g., `yourname.cbse.learning`)
-   - Gmail will suggest alternatives if your choice is taken
-3. Click **Next**
-
-### Step 2.5: Create Password
-
-1. Enter a strong password (at least 8 characters)
-2. Use a mix of letters, numbers, and symbols
-3. Re-enter the password to confirm
-4. Click **Next**
-
-### Step 2.6: Add Recovery Phone (Recommended)
-
-1. Enter your phone number
-2. Click **Next**
-3. You will receive an SMS with a verification code
-4. Enter the code and click **Verify**
-
-### Step 2.7: Add Recovery Email (Optional)
-
-1. Enter an alternative email address for account recovery
-2. Or click **Skip**
-
-### Step 2.8: Review and Accept Terms
-
-1. Review your account information
-2. Click **Next**
-3. Read Google's Terms of Service and Privacy Policy
-4. Click **I agree**
-
-**Your Google account is now created!**
+```
+┌──────────────┐     HTTPS      ┌──────────────┐     API      ┌──────────────┐
+│   Student    │───────────────▶│  Cloud Run   │─────────────▶│  Replicate   │
+│   Browser    │                │  (FastAPI)   │              │  (Llama 3.1) │
+└──────────────┘                └──────┬───────┘              └──────────────┘
+                                       │
+                    ┌──────────────────┼──────────────────┐
+                    ▼                  ▼                  ▼
+             ┌───────────┐      ┌───────────┐      ┌───────────┐
+             │ Firestore │      │  Firebase │      │   Cloud   │
+             │  (Data)   │      │   Auth    │      │  Storage  │
+             └───────────┘      └───────────┘      └───────────┘
+```
 
 ---
 
-## 3. Create GCP Account
+## Phase 1: Account Creation
 
-### Step 3.1: Go to Google Cloud Console
+### Step 1.1: Create Google Account
 
-1. Open your web browser
-2. Go to: https://console.cloud.google.com/
-3. Sign in with your Google account if not already signed in
+#### WHAT
+Create a Google account to access all Google Cloud services.
 
-### Step 3.2: Accept Terms of Service
+#### WHY
+Google account is the foundation for GCP, Firebase, and all related services. A new account gets $300 free credits.
 
-1. You will see the Google Cloud Platform Terms of Service
-2. Check the box: "I agree to the Google Cloud Platform Terms of Service"
-3. Check the box for email updates (optional)
-4. Select your country: **India**
-5. Click **AGREE AND CONTINUE**
+#### WHEN
+First step if you don't have a Google account. Skip if you already have one.
 
-### Step 3.3: Welcome to Google Cloud
+#### WHERE
+https://accounts.google.com/signup
 
-1. You will see the Google Cloud Console dashboard
-2. A popup may appear offering a free trial - we'll set this up next
+#### HOW
 
----
+1. **Navigate to signup page**
+   - Open browser: https://accounts.google.com/signup
+   - Click "Create account" then "For myself"
 
-## 4. Set Up Billing
-
-GCP requires a billing account even for free tier usage. You won't be charged unless you exceed free tier limits.
-
-### Step 4.1: Start Free Trial
-
-1. Look for the "Activate" or "Try for free" button in the top bar
-2. Or go to: https://console.cloud.google.com/freetrial
-3. Click **ACTIVATE** or **START FREE TRIAL**
-
-### Step 4.2: Account Information (Step 1 of 2)
-
-1. **Country**: Select **India**
-2. **What best describes your organization**: Select **Personal project** or appropriate option
-3. Check the box to agree to Terms of Service
-4. Click **CONTINUE**
-
-### Step 4.3: Payment Information (Step 2 of 2)
-
-1. **Account type**: Select **Individual**
-2. **Name and address**: Enter your details
-   - Name: Your full name
-   - Address line 1: Your street address
-   - City: Your city
-   - State: Your state
-   - Postal code: Your PIN code
-3. **Payment method**: 
-   - For Indian users: You can use UPI, Debit Card, or Credit Card
-   - Enter your card details or UPI ID
-4. Click **START MY FREE TRIAL**
-
-### Step 4.4: Verify Your Identity
-
-1. Google may charge a small amount (usually ₹2) to verify your card
-2. This amount will be refunded
-3. Complete any additional verification steps
-
-### Step 4.5: Free Trial Confirmation
-
-1. You will see a confirmation message
-2. You now have:
-   - **$300 USD free credits** (approximately ₹25,000)
-   - **90 days** to use these credits
-   - After 90 days, you'll only be charged if you upgrade to a paid account
-
-**Important**: The free trial will NOT automatically charge you. You must manually upgrade to continue after the trial.
-
----
-
-## 5. Create GCP Project
-
-### Step 5.1: Open Project Selector
-
-1. In the Google Cloud Console, look at the top bar
-2. Click on the project dropdown (it may say "Select a project" or show a project name)
-3. A dialog will appear
-
-### Step 5.2: Create New Project
-
-1. Click **NEW PROJECT** in the top right of the dialog
-2. Enter project details:
-   - **Project name**: `cbse-learning-platform`
-   - **Project ID**: Will be auto-generated (you can customize it)
-   - **Location**: Leave as "No organization" for personal projects
-3. Click **CREATE**
-
-### Step 5.3: Wait for Project Creation
-
-1. A notification will appear showing project creation progress
-2. Wait for "Create Project: cbse-learning-platform" to complete
-3. This usually takes 30-60 seconds
-
-### Step 5.4: Select Your Project
-
-1. Click on the notification or go to project selector
-2. Select **cbse-learning-platform**
-3. The console will now show your new project
-
-### Step 5.5: Note Your Project ID
-
-1. Go to: https://console.cloud.google.com/home/dashboard
-2. Find "Project info" card
-3. Note down your **Project ID** (e.g., `cbse-learning-platform-12345`)
-4. You'll need this later
-
----
-
-## 6. Set Budget Alerts
-
-Protect yourself from unexpected charges by setting up budget alerts.
-
-### Step 6.1: Go to Budgets Page
-
-1. In the Cloud Console, click the hamburger menu (☰) in the top left
-2. Scroll down and click **Billing**
-3. Select your billing account
-4. In the left sidebar, click **Budgets & alerts**
-
-### Step 6.2: Create Budget
-
-1. Click **CREATE BUDGET**
-2. Enter budget details:
-   - **Name**: `CBSE Learning Budget`
-   - **Time range**: Monthly
-   - **Projects**: Select `cbse-learning-platform`
-3. Click **NEXT**
-
-### Step 6.3: Set Budget Amount
-
-1. **Budget type**: Select **Specified amount**
-2. **Target amount**: Enter `1000` (for ₹1000/month)
-   - Note: GCP shows amounts in your billing currency
-3. Click **NEXT**
-
-### Step 6.4: Set Alert Thresholds
-
-1. Default thresholds are set at 50%, 90%, and 100%
-2. Add additional threshold:
-   - Click **ADD THRESHOLD**
-   - Enter `80` for 80%
-3. **Manage notifications**:
-   - Check **Email alerts to billing admins and users**
-   - Optionally add additional email addresses
-4. Click **FINISH**
-
-### Step 6.5: Verify Budget Created
-
-1. You should see your budget in the list
-2. Current spend should show ₹0.00
-
----
-
-## 7. Install Required Tools
-
-You need to install some tools on your computer to deploy the application.
-
-### Step 7.1: Install Google Cloud SDK (gcloud CLI)
-
-#### For Windows:
-
-1. Download the installer from: https://cloud.google.com/sdk/docs/install
-2. Run the downloaded `GoogleCloudSDKInstaller.exe`
-3. Follow the installation wizard:
-   - Accept the license agreement
-   - Choose installation location (default is fine)
-   - Select components (default is fine)
-4. Check "Run 'gcloud init'" at the end
-5. Click **Install**
-
-#### For macOS:
-
-1. Open Terminal
-2. Run:
-   ```bash
-   curl https://sdk.cloud.google.com | bash
+2. **Enter personal information**
    ```
-3. Restart your terminal
-4. Run:
-   ```bash
-   gcloud init
+   First name: [Your first name]
+   Last name: [Your last name]
+   ```
+   - Click "Next"
+
+3. **Set birthday and gender**
+   ```
+   Birthday: [Your date of birth]
+   Gender: [Select option]
+   ```
+   - Click "Next"
+
+4. **Choose email address**
+   - Option A: Create new Gmail (recommended for fresh credits)
+   - Option B: Use existing email
+   - Suggested format: `yourname.cbse.learning@gmail.com`
+
+5. **Create strong password**
+   ```
+   Requirements:
+   - Minimum 8 characters
+   - Mix of letters, numbers, symbols
+   - Example: Cbse@Learn2024!
    ```
 
-#### For Linux (Ubuntu/Debian):
+6. **Verify phone number**
+   - Enter phone number with country code (+91 for India)
+   - Enter SMS verification code
+   - Click "Verify"
 
-1. Open Terminal
-2. Run:
-   ```bash
-   sudo apt-get update
-   sudo apt-get install apt-transport-https ca-certificates gnupg curl
-   curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
-   echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
-   sudo apt-get update && sudo apt-get install google-cloud-cli
-   ```
+7. **Accept terms**
+   - Review Terms of Service
+   - Click "I agree"
 
-### Step 7.2: Initialize gcloud
+**Verification**: You should see Google account dashboard.
 
-1. Open Terminal (or Command Prompt on Windows)
-2. Run:
-   ```bash
-   gcloud init
-   ```
-3. When prompted:
-   - **Would you like to log in?**: Enter `Y`
-   - A browser window will open
+---
+
+### Step 1.2: Create GCP Account with Free Trial
+
+#### WHAT
+Activate Google Cloud Platform with $300 free credits valid for 90 days.
+
+#### WHY
+Free credits allow full experimentation without cost. After trial, you only pay for what you use beyond free tier.
+
+#### WHEN
+Immediately after Google account creation.
+
+#### WHERE
+https://console.cloud.google.com/freetrial
+
+#### HOW
+
+1. **Navigate to GCP Console**
+   - Go to: https://console.cloud.google.com/
    - Sign in with your Google account
-   - Click **Allow** to grant permissions
-4. Back in terminal:
-   - **Pick cloud project**: Select `cbse-learning-platform`
-   - **Configure default region**: Enter the number for `asia-south1` (Mumbai)
 
-### Step 7.3: Verify gcloud Installation
+2. **Accept Terms of Service**
+   ```
+   [x] I agree to Google Cloud Platform Terms of Service
+   [x] Email updates (optional)
+   Country: India
+   ```
+   - Click "AGREE AND CONTINUE"
 
-Run:
+3. **Start Free Trial**
+   - Click "Activate" or "Try for free" button
+   - Or go directly to: https://console.cloud.google.com/freetrial
+
+4. **Account Information (Step 1/2)**
+   ```
+   Country: India
+   Organization type: Personal project
+   [x] Terms of Service agreement
+   ```
+   - Click "CONTINUE"
+
+5. **Payment Information (Step 2/2)**
+   ```
+   Account type: Individual
+   Name: [Your full name]
+   Address: [Your complete address]
+   City: [Your city]
+   State: [Your state]
+   PIN code: [Your postal code]
+   
+   Payment method:
+   - Credit/Debit Card, OR
+   - UPI ID (for Indian users)
+   ```
+   - Click "START MY FREE TRIAL"
+
+6. **Identity Verification**
+   - Google may charge Rs.2 for verification (refunded)
+   - Complete any additional verification steps
+
+**Verification**: 
+```bash
+gcloud auth list
+# Should show your account as active
+```
+
+**What You Get**:
+- $300 USD free credits (~Rs.25,000)
+- 90 days validity
+- No automatic charges after trial
+
+---
+
+## Phase 2: Project Setup
+
+### Step 2.1: Create GCP Project
+
+#### WHAT
+Create a dedicated GCP project to isolate resources, billing, and permissions.
+
+#### WHY
+Projects provide logical separation. Each project has its own billing, APIs, and access controls.
+
+#### WHEN
+After GCP account activation.
+
+#### WHERE
+https://console.cloud.google.com/projectcreate
+
+#### HOW
+
+1. **Open Project Selector**
+   - Click project dropdown in top navigation bar
+   - Click "NEW PROJECT"
+
+2. **Configure Project**
+   ```
+   Project name: cbse-learning-platform
+   Project ID: [auto-generated, can customize]
+   Location: No organization (for personal)
+   ```
+   - Click "CREATE"
+
+3. **Wait for Creation**
+   - Watch notification bell for progress
+   - Takes 30-60 seconds
+
+4. **Select Project**
+   - Click notification or project selector
+   - Select "cbse-learning-platform"
+
+5. **Note Project ID**
+   - Go to: https://console.cloud.google.com/home/dashboard
+   - Find "Project info" card
+   - Copy Project ID (e.g., `cbse-learning-platform-12345`)
+
+**Verification**:
+```bash
+gcloud config set project cbse-learning-platform
+gcloud config get-value project
+# Output: cbse-learning-platform
+```
+
+---
+
+### Step 2.2: Set Budget Alerts
+
+#### WHAT
+Configure spending alerts to prevent unexpected charges.
+
+#### WHY
+Budget alerts notify you before costs exceed your limit. Essential for cost control.
+
+#### WHEN
+Immediately after project creation.
+
+#### WHERE
+https://console.cloud.google.com/billing/budgets
+
+#### HOW
+
+1. **Navigate to Budgets**
+   - Click hamburger menu (three lines icon)
+   - Click "Billing"
+   - Select your billing account
+   - Click "Budgets & alerts"
+
+2. **Create Budget**
+   - Click "CREATE BUDGET"
+   ```
+   Name: CBSE Learning Budget
+   Time range: Monthly
+   Projects: cbse-learning-platform
+   ```
+   - Click "NEXT"
+
+3. **Set Amount**
+   ```
+   Budget type: Specified amount
+   Target amount: 1000 (INR)
+   ```
+   - Click "NEXT"
+
+4. **Configure Alerts**
+   ```
+   Thresholds:
+   - 50% of budget
+   - 80% of budget
+   - 100% of budget
+   
+   Notifications:
+   [x] Email alerts to billing admins
+   Additional emails: [your-email@gmail.com]
+   ```
+   - Click "FINISH"
+
+**Verification**: Budget should appear in list with Rs.0.00 current spend.
+
+---
+
+### Step 2.3: Enable Required APIs
+
+#### WHAT
+Enable GCP APIs needed for Cloud Run, Firestore, Storage, and AI services.
+
+#### WHY
+APIs must be explicitly enabled before use. This is a security feature.
+
+#### WHEN
+Before deploying any services.
+
+#### WHERE
+GCP Console or gcloud CLI.
+
+#### HOW
+
+```bash
+# Set project
+gcloud config set project cbse-learning-platform
+
+# Enable all required APIs (run each command)
+gcloud services enable run.googleapis.com
+gcloud services enable artifactregistry.googleapis.com
+gcloud services enable cloudbuild.googleapis.com
+gcloud services enable firestore.googleapis.com
+gcloud services enable storage.googleapis.com
+gcloud services enable secretmanager.googleapis.com
+gcloud services enable identitytoolkit.googleapis.com
+
+# Optional: Enable Vertex AI (higher cost)
+gcloud services enable aiplatform.googleapis.com
+```
+
+**Verification**:
+```bash
+gcloud services list --enabled | grep -E "(run|artifact|firestore|storage)"
+# Should list all enabled services
+```
+
+---
+
+## Phase 3: Tool Installation
+
+### Step 3.1: Install Google Cloud SDK
+
+#### WHAT
+Install gcloud CLI to interact with GCP from your terminal.
+
+#### WHY
+CLI enables scripted deployments, automation, and easier management than web console.
+
+#### WHEN
+Before any deployment operations.
+
+#### WHERE
+Your local development machine.
+
+#### HOW
+
+**For Windows:**
+```powershell
+# Download installer from:
+# https://cloud.google.com/sdk/docs/install
+
+# Run GoogleCloudSDKInstaller.exe
+# Follow wizard with default options
+# Check "Run gcloud init" at end
+```
+
+**For macOS:**
+```bash
+# Install via curl
+curl https://sdk.cloud.google.com | bash
+
+# Restart terminal
+exec -l $SHELL
+
+# Initialize
+gcloud init
+```
+
+**For Linux (Ubuntu/Debian):**
+```bash
+# Add Google Cloud SDK repository
+sudo apt-get update
+sudo apt-get install apt-transport-https ca-certificates gnupg curl
+
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | \
+  sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] \
+  https://packages.cloud.google.com/apt cloud-sdk main" | \
+  sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+
+sudo apt-get update && sudo apt-get install google-cloud-cli
+```
+
+**Initialize gcloud:**
+```bash
+gcloud init
+
+# When prompted:
+# 1. Log in: Y (browser opens)
+# 2. Select project: cbse-learning-platform
+# 3. Default region: asia-south1
+```
+
+**Verification**:
 ```bash
 gcloud config list
+# Output should show:
+# [core]
+# account = your-email@gmail.com
+# project = cbse-learning-platform
 ```
 
-You should see output like:
-```
-[core]
-account = your-email@gmail.com
-project = cbse-learning-platform
+---
 
-[compute]
-region = asia-south1
-```
+### Step 3.2: Install Docker
 
-### Step 7.4: Install Docker
+#### WHAT
+Install Docker to build and run container images.
 
-#### For Windows:
+#### WHY
+Cloud Run deploys containerized applications. Docker builds these containers.
 
-1. Download Docker Desktop from: https://www.docker.com/products/docker-desktop/
-2. Run the installer
-3. Follow the installation wizard
-4. Restart your computer when prompted
-5. Start Docker Desktop from the Start menu
-6. Wait for Docker to start (whale icon in system tray)
+#### WHEN
+Before building application images.
 
-#### For macOS:
+#### WHERE
+Your local development machine.
 
-1. Download Docker Desktop from: https://www.docker.com/products/docker-desktop/
-2. Open the downloaded `.dmg` file
-3. Drag Docker to Applications folder
+#### HOW
+
+**For Windows:**
+1. Download from: https://www.docker.com/products/docker-desktop/
+2. Run installer
+3. Restart computer
+4. Start Docker Desktop
+5. Wait for whale icon in system tray
+
+**For macOS:**
+1. Download from: https://www.docker.com/products/docker-desktop/
+2. Open .dmg file
+3. Drag Docker to Applications
 4. Open Docker from Applications
-5. Wait for Docker to start
+5. Wait for initialization
 
-#### For Linux (Ubuntu):
-
+**For Linux (Ubuntu):**
 ```bash
-# Update package index
-sudo apt-get update
-
 # Install prerequisites
+sudo apt-get update
 sudo apt-get install ca-certificates curl gnupg lsb-release
 
-# Add Docker's official GPG key
+# Add Docker GPG key
 sudo mkdir -p /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 
-# Set up repository
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+# Add repository
+echo "deb [arch=$(dpkg --print-architecture) \
+  signed-by=/etc/apt/keyrings/docker.gpg] \
+  https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 # Install Docker
 sudo apt-get update
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+sudo apt-get install docker-ce docker-ce-cli containerd.io
 
-# Add your user to docker group (to run without sudo)
+# Add user to docker group (run without sudo)
 sudo usermod -aG docker $USER
 
-# Log out and log back in for group changes to take effect
+# Log out and back in for group changes
 ```
 
-### Step 7.5: Verify Docker Installation
-
-Run:
+**Verification**:
 ```bash
 docker --version
+# Output: Docker version 24.x.x, build ...
+
+docker run hello-world
+# Should print "Hello from Docker!"
 ```
 
-You should see output like:
-```
-Docker version 24.0.0, build ...
-```
+---
 
-### Step 7.6: Install Git
+### Step 3.3: Install Git
 
-#### For Windows:
+#### WHAT
+Install Git for version control and repository cloning.
 
-1. Download Git from: https://git-scm.com/download/win
-2. Run the installer
-3. Use default options throughout
-4. Click **Install**
+#### WHY
+Git is required to clone the project repository and manage code changes.
 
-#### For macOS:
+#### WHEN
+Before cloning the repository.
 
+#### WHERE
+Your local development machine.
+
+#### HOW
+
+**For Windows:**
+1. Download from: https://git-scm.com/download/win
+2. Run installer with default options
+
+**For macOS:**
 ```bash
-# Git is usually pre-installed. If not:
+# Usually pre-installed, if not:
 xcode-select --install
 ```
 
-#### For Linux:
-
+**For Linux:**
 ```bash
 sudo apt-get install git
 ```
 
-### Step 7.7: Verify Git Installation
-
-Run:
+**Verification**:
 ```bash
 git --version
-```
-
-You should see output like:
-```
-git version 2.40.0
+# Output: git version 2.x.x
 ```
 
 ---
 
-## 8. Clone the Repository
+## Phase 4: Repository Setup
 
-### Step 8.1: Create Working Directory
+### Step 4.1: Clone Repository
+
+#### WHAT
+Download the CBSE Learning Platform source code.
+
+#### WHY
+You need the source code to build and deploy the application.
+
+#### WHEN
+After all tools are installed.
+
+#### WHERE
+Your local development machine.
+
+#### HOW
 
 ```bash
-# Create a directory for the project
+# Create projects directory
 mkdir -p ~/projects
 cd ~/projects
+
+# Clone repository
+git clone https://github.com/sunkaramallikarjuna369/AICBESE.git
+cd AICBESE
+
+# Checkout low-cost branch
+git checkout devin/1766584808-low-cost-firebase-replicate
 ```
 
-### Step 8.2: Clone the Repository
-
-```bash
-git clone https://github.com/sunkaramallikarjuna369/aitutorprompt.git
-cd aitutorprompt
-```
-
-### Step 8.3: Switch to the Correct Branch
-
-```bash
-git checkout devin/1766473437-low-budget-gcp-guide
-```
-
-### Step 8.4: Verify Repository Contents
-
+**Verification**:
 ```bash
 ls -la
-```
-
-You should see:
-```
-cbse-learning-backend/
-cbse-learning-frontend/
-docs/
-infra/
-README.md
+# Should show:
+# cbse-learning-backend/
+# cbse-learning-frontend/
+# docs/
+# infra/
+# README.md
 ```
 
 ---
 
-## 9. Enable GCP APIs
+### Step 4.2: Configure Environment
 
-You need to enable several APIs for the services we'll use.
+#### WHAT
+Set up environment variables for the application.
 
-### Step 9.1: Enable APIs via gcloud
+#### WHY
+Environment variables configure database connections, API keys, and feature flags.
 
-Run each command one by one:
+#### WHEN
+Before running or deploying the application.
 
-```bash
-# Enable Cloud Run API
-gcloud services enable run.googleapis.com
+#### WHERE
+`cbse-learning-backend/.env` file.
 
-# Enable Artifact Registry API
-gcloud services enable artifactregistry.googleapis.com
-
-# Enable Cloud Build API
-gcloud services enable cloudbuild.googleapis.com
-
-# Enable Firestore API
-gcloud services enable firestore.googleapis.com
-
-# Enable Cloud Storage API
-gcloud services enable storage.googleapis.com
-
-# Enable Vertex AI API (for AI features)
-gcloud services enable aiplatform.googleapis.com
-
-# Enable Secret Manager API (for storing secrets)
-gcloud services enable secretmanager.googleapis.com
-
-# Enable Identity Platform API (for Firebase Auth)
-gcloud services enable identitytoolkit.googleapis.com
-```
-
-### Step 9.2: Verify APIs are Enabled
+#### HOW
 
 ```bash
-gcloud services list --enabled
+cd cbse-learning-backend
+
+# Copy template
+cp .env.example .env
+
+# Edit configuration
+nano .env  # or use your preferred editor
 ```
 
-You should see all the APIs listed above in the output.
+**Minimum Configuration**:
+```bash
+# AI Provider (start with mock for free testing)
+AI_PROVIDER=mock
+
+# Application
+APP_ENV=development
+DEBUG=true
+JWT_SECRET_KEY=your-secret-key-change-in-production
+
+# GCP (will be set after project creation)
+GCP_PROJECT_ID=cbse-learning-platform
+GCP_REGION=asia-south1
+```
+
+**Production Configuration** (add later):
+```bash
+# For Replicate AI (low-cost)
+AI_PROVIDER=replicate
+REPLICATE_API_TOKEN=r8_your_token_here
+REPLICATE_MODEL=meta/meta-llama-3.1-8b-instruct
+
+# Firebase credentials path
+FIREBASE_CREDENTIALS_PATH=/path/to/firebase-credentials.json
+```
+
+**Verification**:
+```bash
+cat .env | grep AI_PROVIDER
+# Output: AI_PROVIDER=mock
+```
 
 ---
 
-## 10. Create Artifact Registry
+## Phase 5: Container Registry
 
-Artifact Registry stores your Docker images.
+### Step 5.1: Create Artifact Registry Repository
 
-### Step 10.1: Create Repository
+#### WHAT
+Create a Docker container registry to store application images.
+
+#### WHY
+Cloud Run deploys from container images stored in Artifact Registry.
+
+#### WHEN
+Before building Docker images.
+
+#### WHERE
+GCP Artifact Registry, asia-south1 region.
+
+#### HOW
 
 ```bash
+# Create repository
 gcloud artifacts repositories create cbse-app \
   --repository-format=docker \
   --location=asia-south1 \
   --description="CBSE Learning Platform Docker images"
-```
 
-### Step 10.2: Configure Docker Authentication
-
-```bash
+# Configure Docker authentication
 gcloud auth configure-docker asia-south1-docker.pkg.dev
+# Enter Y when prompted
 ```
 
-When prompted, enter `Y` to confirm.
-
-### Step 10.3: Verify Repository Created
-
+**Verification**:
 ```bash
 gcloud artifacts repositories list --location=asia-south1
-```
-
-You should see:
-```
-REPOSITORY  FORMAT  DESCRIPTION
-cbse-app    DOCKER  CBSE Learning Platform Docker images
+# Output:
+# REPOSITORY  FORMAT  DESCRIPTION
+# cbse-app    DOCKER  CBSE Learning Platform Docker images
 ```
 
 ---
 
-## 11. Build Docker Image
+### Step 5.2: Build Docker Image
 
-### Step 11.1: Navigate to Backend Directory
+#### WHAT
+Build a container image of the backend application.
 
-```bash
-cd ~/projects/aitutorprompt/cbse-learning-backend
-```
+#### WHY
+Container images package the application with all dependencies for consistent deployment.
 
-### Step 11.2: Review Dockerfile
+#### WHEN
+After repository setup and code configuration.
 
-```bash
-cat Dockerfile
-```
+#### WHERE
+Local machine, then pushed to Artifact Registry.
 
-The Dockerfile should already be configured for the application.
-
-### Step 11.3: Build the Docker Image
+#### HOW
 
 ```bash
-# Set your project ID (replace with your actual project ID)
+# Navigate to backend
+cd ~/projects/AICBESE/cbse-learning-backend
+
+# Set project ID
 export PROJECT_ID=$(gcloud config get-value project)
 
-# Build the image
+# Build image
 docker build -t asia-south1-docker.pkg.dev/$PROJECT_ID/cbse-app/backend:v1 .
 ```
 
-This will take 5-10 minutes on first build.
+**Build takes 5-10 minutes on first run.**
 
-### Step 11.4: Verify Image Built
-
+**Verification**:
 ```bash
 docker images | grep cbse-app
+# Should show your image with tag v1
 ```
-
-You should see your image listed.
 
 ---
 
-## 12. Push Image to Registry
+### Step 5.3: Push Image to Registry
 
-### Step 12.1: Push the Image
+#### WHAT
+Upload the built container image to Artifact Registry.
+
+#### WHY
+Cloud Run needs to pull the image from a registry to deploy.
+
+#### WHEN
+After successful local build.
+
+#### WHERE
+From local machine to asia-south1 Artifact Registry.
+
+#### HOW
 
 ```bash
+# Push image
 docker push asia-south1-docker.pkg.dev/$PROJECT_ID/cbse-app/backend:v1
 ```
 
-This will take a few minutes depending on your internet speed.
+**Push takes 2-5 minutes depending on internet speed.**
 
-### Step 12.2: Verify Image in Registry
-
+**Verification**:
 ```bash
-gcloud artifacts docker images list asia-south1-docker.pkg.dev/$PROJECT_ID/cbse-app
+gcloud artifacts docker images list \
+  asia-south1-docker.pkg.dev/$PROJECT_ID/cbse-app
+# Should list backend:v1
 ```
-
-You should see your image listed.
 
 ---
 
-## 13. Deploy to Cloud Run
+## Phase 6: Cloud Run Deployment
 
-### Step 13.1: Deploy the Application
+### Step 6.1: Deploy Application
+
+#### WHAT
+Deploy the container to Cloud Run serverless platform.
+
+#### WHY
+Cloud Run provides auto-scaling, HTTPS, and pay-per-use pricing with scale-to-zero.
+
+#### WHEN
+After image is pushed to registry.
+
+#### WHERE
+Cloud Run, asia-south1 region.
+
+#### HOW
 
 ```bash
+# Deploy to Cloud Run
 gcloud run deploy cbse-learning-app \
   --image=asia-south1-docker.pkg.dev/$PROJECT_ID/cbse-app/backend:v1 \
   --platform=managed \
@@ -622,519 +798,749 @@ gcloud run deploy cbse-learning-app \
   --cpu=1 \
   --min-instances=0 \
   --max-instances=2 \
+  --concurrency=80 \
+  --timeout=60 \
+  --cpu-throttling \
   --set-env-vars="AI_PROVIDER=mock,APP_ENV=production"
 ```
 
-### Step 13.2: Wait for Deployment
+**Deployment takes 1-2 minutes.**
 
-The deployment will take 1-2 minutes. You'll see progress messages.
-
-### Step 13.3: Get Your Application URL
-
-After deployment, you'll see output like:
-```
-Service [cbse-learning-app] revision [cbse-learning-app-00001-abc] has been deployed and is serving 100 percent of traffic.
-Service URL: https://cbse-learning-app-xxxxx-el.a.run.app
-```
-
-**Copy this URL** - this is your live application!
-
-### Step 13.4: Save the URL
-
+**Verification**:
 ```bash
-# Save the URL for later use
-export APP_URL=$(gcloud run services describe cbse-learning-app --region=asia-south1 --format='value(status.url)')
+# Get service URL
+export APP_URL=$(gcloud run services describe cbse-learning-app \
+  --region=asia-south1 --format='value(status.url)')
 echo "Your app URL: $APP_URL"
-```
 
----
-
-## 14. Test the Deployment
-
-### Step 14.1: Test API Root
-
-```bash
-curl $APP_URL/
-```
-
-You should see a JSON response with available services.
-
-### Step 14.2: Test Health Endpoint
-
-```bash
+# Test health endpoint
 curl $APP_URL/health
-```
-
-You should see:
-```json
-{"status": "healthy"}
-```
-
-### Step 14.3: Open in Browser
-
-1. Copy your application URL
-2. Open it in a web browser
-3. You should see the CBSE Learning Platform login page
-
-### Step 14.4: Test Login
-
-1. Use test credentials:
-   - Username: `user`
-   - Password: `dd058af30a635609e894c13b4e524841`
-2. Click Login
-3. You should see the dashboard
-
-### Step 14.5: Test API Documentation
-
-1. Go to: `https://your-app-url/docs`
-2. You should see the Swagger API documentation
-3. You can test endpoints directly from this page
-
----
-
-## 15. Set Up Firebase Authentication
-
-Firebase provides free authentication for up to 50,000 monthly active users.
-
-### Step 15.1: Go to Firebase Console
-
-1. Open: https://console.firebase.google.com/
-2. Sign in with your Google account
-
-### Step 15.2: Add Firebase to Your Project
-
-1. Click **Add project** (or **Create a project**)
-2. Enter project name: `cbse-learning-platform`
-3. **Important**: Click **Add Firebase to a Google Cloud project**
-4. Select your existing GCP project: `cbse-learning-platform`
-5. Click **Continue**
-
-### Step 15.3: Configure Google Analytics (Optional)
-
-1. You can disable Google Analytics to simplify setup
-2. Toggle off **Enable Google Analytics for this project**
-3. Click **Add Firebase**
-
-### Step 15.4: Wait for Setup
-
-1. Firebase will configure your project
-2. This takes about 1 minute
-3. Click **Continue** when done
-
-### Step 15.5: Enable Authentication
-
-1. In Firebase Console, click **Build** in the left sidebar
-2. Click **Authentication**
-3. Click **Get started**
-
-### Step 15.6: Enable Email/Password Sign-in
-
-1. Go to **Sign-in method** tab
-2. Click **Email/Password**
-3. Toggle **Enable** to ON
-4. Click **Save**
-
-### Step 15.7: Enable Google Sign-in (Optional)
-
-1. Click **Add new provider**
-2. Click **Google**
-3. Toggle **Enable** to ON
-4. Enter your email as **Project support email**
-5. Click **Save**
-
-### Step 15.8: Download Service Account Key
-
-1. Click the gear icon (⚙️) next to **Project Overview**
-2. Click **Project settings**
-3. Go to **Service accounts** tab
-4. Click **Generate new private key**
-5. Click **Generate key**
-6. Save the downloaded JSON file securely (e.g., `firebase-credentials.json`)
-
-**IMPORTANT**: Never commit this file to git or share it publicly!
-
-### Step 15.9: Upload Credentials to Secret Manager
-
-```bash
-# Create secret from the downloaded file
-gcloud secrets create firebase-credentials \
-  --data-file=/path/to/your/firebase-credentials.json
-
-# Get your project number
-PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format='value(projectNumber)')
-
-# Grant Cloud Run access to the secret
-gcloud secrets add-iam-policy-binding firebase-credentials \
-  --member="serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com" \
-  --role="roles/secretmanager.secretAccessor"
-```
-
-### Step 15.10: Update Cloud Run with Firebase
-
-```bash
-gcloud run deploy cbse-learning-app \
-  --image=asia-south1-docker.pkg.dev/$PROJECT_ID/cbse-app/backend:v1 \
-  --platform=managed \
-  --region=asia-south1 \
-  --allow-unauthenticated \
-  --memory=512Mi \
-  --cpu=1 \
-  --min-instances=0 \
-  --max-instances=2 \
-  --set-env-vars="AI_PROVIDER=mock,APP_ENV=production" \
-  --set-secrets="FIREBASE_CREDENTIALS_PATH=firebase-credentials:latest"
+# Output: {"status": "healthy"}
 ```
 
 ---
 
-## 16. Set Up Firestore Database
+### Step 6.2: Test Deployment
 
-Firestore provides a NoSQL database with a generous free tier.
+#### WHAT
+Verify the deployed application works correctly.
 
-### Step 16.1: Go to Firestore Console
+#### WHY
+Catch deployment issues before configuring additional services.
 
-1. Go to: https://console.cloud.google.com/firestore
-2. Make sure your project is selected
+#### WHEN
+Immediately after deployment.
 
-### Step 16.2: Create Database
+#### WHERE
+Your deployed Cloud Run URL.
 
-1. Click **Create Database**
-2. Select **Native mode** (recommended for new projects)
-3. Click **Continue**
+#### HOW
 
-### Step 16.3: Choose Location
+```bash
+# Test API root
+curl $APP_URL/
+# Should return JSON with available services
 
-1. Select **asia-south1 (Mumbai)** for lowest latency in India
-2. Click **Create Database**
+# Test health endpoint
+curl $APP_URL/health
+# Output: {"status": "healthy"}
 
-### Step 16.4: Wait for Creation
+# Test curriculum endpoint
+curl $APP_URL/curriculum/classes
+# Should return list of classes
 
-1. Database creation takes 1-2 minutes
-2. You'll see the Firestore data browser when done
+# Open API documentation
+echo "Open in browser: $APP_URL/docs"
+```
 
-### Step 16.5: Verify Database
-
-1. You should see an empty database
-2. Collections will be created automatically when the app writes data
+**Browser Test**:
+1. Open `$APP_URL` in browser
+2. You should see the login page
+3. Test credentials: `user` / `dd058af30a635609e894c13b4e524841`
 
 ---
 
-## 17. Set Up Cloud Storage
+## Phase 7: Firebase Setup
 
-Cloud Storage is used for storing PDFs and generated visualizations.
+### Step 7.1: Create Firebase Project
 
-### Step 17.1: Go to Cloud Storage Console
+#### WHAT
+Link Firebase to your GCP project for authentication and database services.
 
-1. Go to: https://console.cloud.google.com/storage
-2. Make sure your project is selected
+#### WHY
+Firebase provides free authentication (50K MAU) and Firestore database.
 
-### Step 17.2: Create Bucket
+#### WHEN
+After Cloud Run deployment is working.
 
-1. Click **CREATE BUCKET**
-2. Enter bucket name: `cbse-learning-platform-storage` (must be globally unique)
-   - If taken, try: `cbse-learning-platform-storage-[your-initials]`
-3. Click **Continue**
+#### WHERE
+https://console.firebase.google.com
 
-### Step 17.3: Choose Location
+#### HOW
 
-1. Select **Region**
-2. Choose **asia-south1 (Mumbai)**
-3. Click **Continue**
+1. **Navigate to Firebase Console**
+   - Go to: https://console.firebase.google.com
+   - Sign in with your Google account
 
-### Step 17.4: Choose Storage Class
+2. **Add Firebase to GCP Project**
+   - Click "Add project"
+   - Click "Add Firebase to a Google Cloud project"
+   - Select: `cbse-learning-platform`
+   - Click "Continue"
 
-1. Select **Standard** (best for frequently accessed data)
-2. Click **Continue**
+3. **Configure Analytics (Optional)**
+   - Toggle OFF "Enable Google Analytics" (simplifies setup)
+   - Click "Add Firebase"
 
-### Step 17.5: Access Control
+4. **Wait for Setup**
+   - Takes about 1 minute
+   - Click "Continue" when done
 
-1. Select **Uniform** (recommended)
-2. Uncheck **Enforce public access prevention** if you want public access to some files
-3. Click **Continue**
+**Verification**: You should see Firebase Console dashboard for your project.
 
-### Step 17.6: Protection Tools
+---
 
-1. Leave defaults (no additional protection needed for MVP)
-2. Click **CREATE**
+### Step 7.2: Enable Authentication
 
-### Step 17.7: Create Folder Structure
+#### WHAT
+Configure Firebase Authentication with email/password sign-in.
 
-1. Click on your bucket name
-2. Click **CREATE FOLDER**
-3. Create these folders:
-   - `cbse/class-10/mathematics/quadratic-equations`
-4. This follows the GCS naming strategy for organizing content
+#### WHY
+Secure user authentication without building auth from scratch.
 
-### Step 17.8: Update Cloud Run with Storage Bucket
+#### WHEN
+After Firebase project is created.
 
+#### WHERE
+Firebase Console > Authentication.
+
+#### HOW
+
+1. **Navigate to Authentication**
+   - Click "Build" in sidebar
+   - Click "Authentication"
+   - Click "Get started"
+
+2. **Enable Email/Password**
+   - Click "Email/Password" provider
+   - Toggle "Enable" to ON
+   - Click "Save"
+
+3. **Enable Google Sign-in (Optional)**
+   - Click "Add new provider"
+   - Click "Google"
+   - Toggle "Enable" to ON
+   - Enter support email
+   - Click "Save"
+
+**Verification**: Providers should show as "Enabled" in the list.
+
+---
+
+### Step 7.3: Download Service Account Key
+
+#### WHAT
+Download credentials for backend to access Firebase services.
+
+#### WHY
+The backend needs authenticated access to Firebase Auth and Firestore.
+
+#### WHEN
+After authentication is enabled.
+
+#### WHERE
+Firebase Console > Project Settings > Service Accounts.
+
+#### HOW
+
+1. **Navigate to Service Accounts**
+   - Click gear icon in sidebar
+   - Click "Project settings"
+   - Click "Service accounts" tab
+
+2. **Generate Key**
+   - Click "Generate new private key"
+   - Click "Generate key" in confirmation
+   - Save downloaded JSON file securely
+   - Rename to `firebase-credentials.json`
+
+3. **Upload to Secret Manager**
+   ```bash
+   # Create secret from file
+   gcloud secrets create firebase-credentials \
+     --data-file=/path/to/firebase-credentials.json
+   
+   # Get project number
+   PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID \
+     --format='value(projectNumber)')
+   
+   # Grant Cloud Run access
+   gcloud secrets add-iam-policy-binding firebase-credentials \
+     --member="serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com" \
+     --role="roles/secretmanager.secretAccessor"
+   ```
+
+4. **Update Cloud Run**
+   ```bash
+   gcloud run services update cbse-learning-app \
+     --region=asia-south1 \
+     --set-secrets="FIREBASE_CREDENTIALS_PATH=firebase-credentials:latest"
+   ```
+
+**Verification**:
 ```bash
-gcloud run deploy cbse-learning-app \
-  --image=asia-south1-docker.pkg.dev/$PROJECT_ID/cbse-app/backend:v1 \
-  --platform=managed \
-  --region=asia-south1 \
-  --allow-unauthenticated \
-  --memory=512Mi \
-  --cpu=1 \
-  --min-instances=0 \
-  --max-instances=2 \
-  --set-env-vars="AI_PROVIDER=mock,APP_ENV=production,GCS_BUCKET=cbse-learning-platform-storage" \
-  --set-secrets="FIREBASE_CREDENTIALS_PATH=firebase-credentials:latest"
+gcloud secrets list
+# Should show firebase-credentials
 ```
 
 ---
 
-## 18. Configure Vertex AI
+## Phase 8: Database Configuration
 
-Vertex AI provides AI capabilities using Google's Gemini model.
+### Step 8.1: Create Firestore Database
 
-### Step 18.1: Enable Vertex AI
+#### WHAT
+Create a Firestore NoSQL database for storing user data and progress.
 
+#### WHY
+Firestore offers 1GB free storage, 50K reads/day, 20K writes/day at no cost.
+
+#### WHEN
+After Firebase project is set up.
+
+#### WHERE
+Firebase Console or GCP Console.
+
+#### HOW
+
+1. **Navigate to Firestore**
+   - Go to: https://console.cloud.google.com/firestore
+   - Or Firebase Console > Build > Firestore Database
+
+2. **Create Database**
+   - Click "Create Database"
+   - Select "Native mode" (recommended)
+   - Click "Continue"
+
+3. **Choose Location**
+   - Select: `asia-south1 (Mumbai)`
+   - Click "Create Database"
+
+4. **Wait for Creation**
+   - Takes 1-2 minutes
+   - You'll see empty database browser when done
+
+**Verification**: Firestore data browser should be visible with no collections.
+
+---
+
+### Step 8.2: Configure Security Rules
+
+#### WHAT
+Set up Firestore security rules to protect user data.
+
+#### WHY
+Security rules prevent unauthorized access to sensitive data.
+
+#### WHEN
+Before going to production.
+
+#### WHERE
+Firebase Console > Firestore > Rules.
+
+#### HOW
+
+1. **Navigate to Rules**
+   - In Firestore Database, click "Rules" tab
+
+2. **Update Rules**
+   ```javascript
+   rules_version = '2';
+   service cloud.firestore {
+     match /databases/{database}/documents {
+       // Users can only access their own data
+       match /users/{userId} {
+         allow read, write: if request.auth != null && 
+           request.auth.uid == userId;
+       }
+       
+       // Progress data - user-specific
+       match /progress/{progressId} {
+         allow read, write: if request.auth != null && 
+           resource.data.user_id == request.auth.uid;
+       }
+       
+       // Quizzes - user can read own, create new
+       match /quizzes/{quizId} {
+         allow read: if request.auth != null && 
+           resource.data.user_id == request.auth.uid;
+         allow create: if request.auth != null;
+       }
+       
+       // Doubts - user-specific
+       match /doubts/{doubtId} {
+         allow read, write: if request.auth != null && 
+           resource.data.user_id == request.auth.uid;
+       }
+       
+       // Public curriculum (read-only)
+       match /curriculum/{document=**} {
+         allow read: if request.auth != null;
+         allow write: if false;
+       }
+       
+       // Chapters - public read
+       match /chapters/{chapterId} {
+         allow read: if true;
+         allow write: if false;
+       }
+     }
+   }
+   ```
+
+3. **Publish Rules**
+   - Click "Publish"
+
+**Verification**: Rules should show "Published" status.
+
+---
+
+## Phase 9: Storage Setup
+
+### Step 9.1: Create Cloud Storage Bucket
+
+#### WHAT
+Create a storage bucket for PDFs, images, and generated content.
+
+#### WHY
+Cloud Storage provides 5GB free storage for static files.
+
+#### WHEN
+After database is configured.
+
+#### WHERE
+GCP Console > Cloud Storage.
+
+#### HOW
+
+1. **Navigate to Cloud Storage**
+   - Go to: https://console.cloud.google.com/storage
+
+2. **Create Bucket**
+   - Click "CREATE BUCKET"
+   ```
+   Name: cbse-learning-platform-storage
+   (Must be globally unique - add initials if taken)
+   ```
+   - Click "Continue"
+
+3. **Choose Location**
+   - Select: Region
+   - Choose: asia-south1 (Mumbai)
+   - Click "Continue"
+
+4. **Choose Storage Class**
+   - Select: Standard
+   - Click "Continue"
+
+5. **Access Control**
+   - Select: Uniform
+   - Click "Continue"
+
+6. **Create**
+   - Click "CREATE"
+
+7. **Create Folder Structure**
+   - Click bucket name
+   - Click "CREATE FOLDER"
+   - Create: `cbse/class-10/mathematics/quadratic-equations`
+
+8. **Update Cloud Run**
+   ```bash
+   gcloud run services update cbse-learning-app \
+     --region=asia-south1 \
+     --update-env-vars="GCS_BUCKET=cbse-learning-platform-storage"
+   ```
+
+**Verification**:
 ```bash
-gcloud services enable aiplatform.googleapis.com
+gsutil ls gs://cbse-learning-platform-storage/
+# Should show cbse/ folder
 ```
 
-### Step 18.2: Grant Permissions
+---
 
-```bash
-# Get project number
-PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format='value(projectNumber)')
+## Phase 10: AI Configuration
 
-# Grant Vertex AI User role to Cloud Run service account
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-  --member="serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com" \
-  --role="roles/aiplatform.user"
-```
+### Step 10.1: Configure Replicate AI (Recommended)
 
-### Step 18.3: Update Cloud Run to Use Vertex AI
+#### WHAT
+Set up Replicate API for cost-effective AI inference.
 
-```bash
-gcloud run deploy cbse-learning-app \
-  --image=asia-south1-docker.pkg.dev/$PROJECT_ID/cbse-app/backend:v1 \
-  --platform=managed \
-  --region=asia-south1 \
-  --allow-unauthenticated \
-  --memory=512Mi \
-  --cpu=1 \
-  --min-instances=0 \
-  --max-instances=2 \
-  --set-env-vars="AI_PROVIDER=vertex,APP_ENV=production,GCS_BUCKET=cbse-learning-platform-storage,VERTEX_AI_PROJECT=$PROJECT_ID,VERTEX_AI_LOCATION=asia-south1" \
-  --set-secrets="FIREBASE_CREDENTIALS_PATH=firebase-credentials:latest"
-```
+#### WHY
+Replicate costs ~$0.05/million tokens vs Vertex AI's higher pricing. 10x cheaper.
 
-**Note**: Using `AI_PROVIDER=vertex` will incur costs. For free operation, use `AI_PROVIDER=mock`.
+#### WHEN
+When ready to enable AI features.
 
-### Step 18.4: Test Vertex AI (Optional)
+#### WHERE
+https://replicate.com
 
+#### HOW
+
+1. **Create Replicate Account**
+   - Go to: https://replicate.com
+   - Sign up with GitHub or email
+   - You get $5 free credits
+
+2. **Get API Token**
+   - Go to: https://replicate.com/account/api-tokens
+   - Click "Create token"
+   - Copy token (starts with `r8_`)
+
+3. **Store Token in Secret Manager**
+   ```bash
+   # Create secret
+   echo -n "r8_your_token_here" | \
+     gcloud secrets create replicate-api-token --data-file=-
+   
+   # Grant access
+   PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID \
+     --format='value(projectNumber)')
+   
+   gcloud secrets add-iam-policy-binding replicate-api-token \
+     --member="serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com" \
+     --role="roles/secretmanager.secretAccessor"
+   ```
+
+4. **Update Cloud Run**
+   ```bash
+   gcloud run services update cbse-learning-app \
+     --region=asia-south1 \
+     --update-env-vars="AI_PROVIDER=replicate,REPLICATE_MODEL=meta/meta-llama-3.1-8b-instruct" \
+     --set-secrets="REPLICATE_API_TOKEN=replicate-api-token:latest"
+   ```
+
+**Verification**:
 ```bash
 curl -X POST "$APP_URL/visualization-orchestrator/topics/topic-1/config" \
   -H "Content-Type: application/json" \
   -d '{"student_mode": "average"}'
+# Should return AI-generated visual config
 ```
 
 ---
 
-## 19. Set Up CI/CD
+### Step 10.2: Configure Vertex AI (Alternative)
 
-Automate deployments when you push code changes.
+#### WHAT
+Set up Google Vertex AI with Gemini model (higher cost option).
 
-### Step 19.1: Go to Cloud Build Console
+#### WHY
+Vertex AI offers Google's latest models but at higher cost.
 
-1. Go to: https://console.cloud.google.com/cloud-build
-2. Make sure your project is selected
+#### WHEN
+If you have GCP credits or prefer Google's AI.
 
-### Step 19.2: Connect GitHub Repository
+#### WHERE
+GCP Console > Vertex AI.
 
-1. Click **Triggers** in the left sidebar
-2. Click **CONNECT REPOSITORY**
-3. Select **GitHub (Cloud Build GitHub App)**
-4. Click **Continue**
+#### HOW
 
-### Step 19.3: Authenticate with GitHub
+1. **Enable Vertex AI API**
+   ```bash
+   gcloud services enable aiplatform.googleapis.com
+   ```
 
-1. Click **Authenticate**
-2. Sign in to GitHub if prompted
-3. Click **Authorize Google Cloud Build**
+2. **Grant Permissions**
+   ```bash
+   PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID \
+     --format='value(projectNumber)')
+   
+   gcloud projects add-iam-policy-binding $PROJECT_ID \
+     --member="serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com" \
+     --role="roles/aiplatform.user"
+   ```
 
-### Step 19.4: Select Repository
+3. **Update Cloud Run**
+   ```bash
+   gcloud run services update cbse-learning-app \
+     --region=asia-south1 \
+     --update-env-vars="AI_PROVIDER=vertex,VERTEX_AI_PROJECT=$PROJECT_ID,VERTEX_AI_LOCATION=asia-south1"
+   ```
 
-1. Select your GitHub account
-2. Find and select `aitutorprompt` repository
-3. Check the consent checkbox
-4. Click **Connect**
-
-### Step 19.5: Create Build Trigger
-
-1. Click **CREATE TRIGGER**
-2. Configure trigger:
-   - **Name**: `deploy-on-push`
-   - **Description**: `Deploy to Cloud Run on push to main`
-   - **Event**: Push to a branch
-   - **Source**: 
-     - Repository: `sunkaramallikarjuna369/aitutorprompt`
-     - Branch: `^main$` (or `^devin/1766473437-low-budget-gcp-guide$` for this branch)
-   - **Configuration**: Cloud Build configuration file
-   - **Location**: `/infra/cloudbuild/cloudbuild-simple.yaml`
-3. Click **CREATE**
-
-### Step 19.6: Grant Cloud Build Permissions
-
-```bash
-# Get project number
-PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format='value(projectNumber)')
-
-# Grant Cloud Run Admin role
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-  --member="serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com" \
-  --role="roles/run.admin"
-
-# Grant Service Account User role
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-  --member="serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com" \
-  --role="roles/iam.serviceAccountUser"
-```
-
-### Step 19.7: Test CI/CD
-
-1. Make a small change to any file in the repository
-2. Commit and push to the configured branch
-3. Go to Cloud Build > History to see the build running
-4. Wait for the build to complete (5-10 minutes)
-5. Your app will be automatically updated
+**Note**: Using Vertex AI will incur costs. Use `AI_PROVIDER=mock` for free testing.
 
 ---
 
-## 20. Upload NCERT PDFs
+## Phase 11: CI/CD Pipeline
 
-Now let's add actual CBSE content to the platform.
+### Step 11.1: Connect GitHub Repository
 
-### Step 20.1: Download NCERT PDF
+#### WHAT
+Connect your GitHub repository to Cloud Build for automatic deployments.
 
-1. Go to: https://ncert.nic.in/textbook.php
-2. Select:
-   - Class: **X**
-   - Subject: **Mathematics**
-   - Book: **Mathematics**
-3. Find Chapter 4: **Quadratic Equations**
-4. Click the PDF icon to download
+#### WHY
+CI/CD automates testing and deployment when you push code changes.
 
-### Step 20.2: Upload PDF via API
+#### WHEN
+After manual deployment is working.
 
+#### WHERE
+GCP Console > Cloud Build.
+
+#### HOW
+
+1. **Navigate to Cloud Build**
+   - Go to: https://console.cloud.google.com/cloud-build
+
+2. **Connect Repository**
+   - Click "Triggers" in sidebar
+   - Click "CONNECT REPOSITORY"
+   - Select "GitHub (Cloud Build GitHub App)"
+   - Click "Continue"
+
+3. **Authenticate**
+   - Click "Authenticate"
+   - Sign in to GitHub
+   - Click "Authorize Google Cloud Build"
+
+4. **Select Repository**
+   - Select your GitHub account
+   - Find and select `AICBESE` repository
+   - Check consent checkbox
+   - Click "Connect"
+
+---
+
+### Step 11.2: Create Build Trigger
+
+#### WHAT
+Create a trigger to automatically deploy on code push.
+
+#### WHY
+Automatic deployments reduce manual work and ensure consistency.
+
+#### WHEN
+After repository is connected.
+
+#### WHERE
+Cloud Build > Triggers.
+
+#### HOW
+
+1. **Create Trigger**
+   - Click "CREATE TRIGGER"
+   ```
+   Name: deploy-on-push
+   Description: Deploy to Cloud Run on push
+   Event: Push to a branch
+   Repository: sunkaramallikarjuna369/AICBESE
+   Branch: ^devin/1766584808-low-cost-firebase-replicate$
+   Configuration: Cloud Build configuration file
+   Location: /infra/cloudbuild/cloudbuild-simple.yaml
+   ```
+   - Click "CREATE"
+
+2. **Grant Permissions**
+   ```bash
+   PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID \
+     --format='value(projectNumber)')
+   
+   # Grant Cloud Run Admin
+   gcloud projects add-iam-policy-binding $PROJECT_ID \
+     --member="serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com" \
+     --role="roles/run.admin"
+   
+   # Grant Service Account User
+   gcloud projects add-iam-policy-binding $PROJECT_ID \
+     --member="serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com" \
+     --role="roles/iam.serviceAccountUser"
+   ```
+
+**Verification**: Push a small change and watch Cloud Build > History for the build.
+
+---
+
+## Phase 12: Content Upload
+
+### Step 12.1: Upload NCERT PDFs
+
+#### WHAT
+Add CBSE curriculum content to the platform.
+
+#### WHY
+Students need actual NCERT content to learn from.
+
+#### WHEN
+After all services are configured.
+
+#### WHERE
+Via API endpoints.
+
+#### HOW
+
+1. **Download NCERT PDF**
+   - Go to: https://ncert.nic.in/textbook.php
+   - Select: Class X, Mathematics
+   - Download Chapter 4: Quadratic Equations
+
+2. **Get Authentication Token**
+   ```bash
+   TOKEN=$(curl -s -X POST "$APP_URL/auth/login" \
+     -H "Content-Type: application/json" \
+     -d '{"username": "user", "password": "dd058af30a635609e894c13b4e524841"}' \
+     | jq -r '.access_token')
+   
+   echo "Token: $TOKEN"
+   ```
+
+3. **Upload PDF**
+   ```bash
+   curl -X POST "$APP_URL/pdf-ingestion/upload" \
+     -H "Authorization: Bearer $TOKEN" \
+     -F "file=@/path/to/quadratic-equations.pdf" \
+     -F "class_level=10" \
+     -F "subject=Mathematics" \
+     -F "chapter=Quadratic Equations"
+   ```
+
+4. **Process PDF**
+   ```bash
+   # Get PDF_ID from upload response
+   curl -X POST "$APP_URL/pdf-ingestion/process/YOUR_PDF_ID" \
+     -H "Authorization: Bearer $TOKEN"
+   ```
+
+5. **Index for RAG**
+   ```bash
+   curl -X POST "$APP_URL/rag-agent/index/YOUR_PDF_ID" \
+     -H "Authorization: Bearer $TOKEN"
+   ```
+
+**Verification**:
 ```bash
-# Upload the PDF
-curl -X POST "$APP_URL/pdf-ingestion/upload" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -F "file=@/path/to/quadratic-equations.pdf" \
-  -F "class_level=10" \
-  -F "subject=Mathematics" \
-  -F "chapter=Quadratic Equations"
-```
-
-To get a JWT token, first login:
-```bash
-# Login to get token
-TOKEN=$(curl -s -X POST "$APP_URL/auth/login" \
-  -H "Content-Type: application/json" \
-  -d '{"username": "user", "password": "dd058af30a635609e894c13b4e524841"}' | jq -r '.access_token')
-
-echo "Your token: $TOKEN"
-```
-
-### Step 20.3: Process the PDF
-
-```bash
-# Get the PDF ID from the upload response, then process it
-curl -X POST "$APP_URL/pdf-ingestion/process/YOUR_PDF_ID" \
-  -H "Authorization: Bearer $TOKEN"
-```
-
-### Step 20.4: Generate Visualizations
-
-```bash
-# Generate all visualizations for all student modes
-curl -X POST "$APP_URL/pdf-ingestion/generate-all-visualizations/YOUR_PDF_ID" \
-  -H "Authorization: Bearer $TOKEN"
-```
-
-### Step 20.5: Index for RAG
-
-```bash
-# Index the PDF for question answering
-curl -X POST "$APP_URL/rag-agent/index/YOUR_PDF_ID" \
-  -H "Authorization: Bearer $TOKEN"
-```
-
-### Step 20.6: Test RAG Agent
-
-```bash
-# Ask a question about the PDF
 curl -X POST "$APP_URL/rag-agent/ask" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
     "pdf_id": "YOUR_PDF_ID",
     "question": "What is the quadratic formula?",
-    "student_mode": "average",
-    "include_visualization": true
+    "student_mode": "average"
   }'
+# Should return AI-generated answer
 ```
 
 ---
 
-## 21. Monitor and Maintain
+## Phase 13: Monitoring
 
-### Step 21.1: View Application Logs
+### Step 13.1: View Application Logs
+
+#### WHAT
+Monitor application logs for errors and performance.
+
+#### WHY
+Logs help debug issues and understand application behavior.
+
+#### WHEN
+Ongoing, especially after deployment.
+
+#### WHERE
+Cloud Run logs or Cloud Logging.
+
+#### HOW
 
 ```bash
-gcloud run services logs read cbse-learning-app --region=asia-south1 --limit=100
+# View recent logs
+gcloud run services logs read cbse-learning-app \
+  --region=asia-south1 --limit=100
+
+# Stream logs in real-time
+gcloud run services logs tail cbse-learning-app \
+  --region=asia-south1
 ```
 
-### Step 21.2: Monitor in Console
-
+**Console Monitoring**:
 1. Go to: https://console.cloud.google.com/run
-2. Click on `cbse-learning-app`
-3. View:
-   - **Metrics**: Request count, latency, errors
-   - **Logs**: Application logs
-   - **Revisions**: Deployment history
-
-### Step 21.3: Set Up Alerts (Optional)
-
-1. Go to: https://console.cloud.google.com/monitoring/alerting
-2. Click **CREATE POLICY**
-3. Configure alert for:
-   - High error rate
-   - High latency
-   - Budget threshold exceeded
-
-### Step 21.4: Check Billing
-
-1. Go to: https://console.cloud.google.com/billing
-2. View current charges
-3. Check budget status
-
-### Step 21.5: Scale as Needed
-
-To handle more traffic:
-```bash
-gcloud run deploy cbse-learning-app \
-  --image=asia-south1-docker.pkg.dev/$PROJECT_ID/cbse-app/backend:v1 \
-  --platform=managed \
-  --region=asia-south1 \
-  --allow-unauthenticated \
-  --memory=1Gi \
-  --cpu=2 \
-  --min-instances=1 \
-  --max-instances=10 \
-  --set-env-vars="AI_PROVIDER=vertex,APP_ENV=production"
-```
+2. Click `cbse-learning-app`
+3. View: Metrics, Logs, Revisions
 
 ---
 
-## 22. Troubleshooting
+### Step 13.2: Set Up Alerts
 
-### Problem: "Permission Denied" Errors
+#### WHAT
+Configure alerts for errors, high latency, and budget thresholds.
 
-**Solution**:
+#### WHY
+Proactive alerts help catch issues before users complain.
+
+#### WHEN
+After deployment is stable.
+
+#### WHERE
+Cloud Monitoring.
+
+#### HOW
+
+1. **Navigate to Alerting**
+   - Go to: https://console.cloud.google.com/monitoring/alerting
+
+2. **Create Policy**
+   - Click "CREATE POLICY"
+   - Add conditions:
+     - Error rate > 1% for 5 minutes
+     - Latency p95 > 5 seconds
+     - Instance count > 2 (cost alert)
+
+3. **Add Notifications**
+   - Add email channel
+   - Save policy
+
+---
+
+### Step 13.3: Check Billing
+
+#### WHAT
+Monitor spending against your budget.
+
+#### WHY
+Prevent unexpected charges.
+
+#### WHEN
+Weekly or when alerts trigger.
+
+#### WHERE
+GCP Billing Console.
+
+#### HOW
+
+```bash
+# Check billing accounts
+gcloud billing accounts list
+
+# View project billing
+gcloud billing projects describe $PROJECT_ID
+```
+
+**Console**:
+- Go to: https://console.cloud.google.com/billing
+- View current charges and forecasts
+
+---
+
+## Troubleshooting Reference
+
+### Issue: Permission Denied Errors
+
+#### WHAT
+Authentication or authorization failures.
+
+#### WHY
+Token expired, wrong project, or missing permissions.
+
+#### HOW to Fix
 ```bash
 # Re-authenticate
 gcloud auth login
@@ -1142,74 +1548,137 @@ gcloud auth configure-docker asia-south1-docker.pkg.dev
 
 # Verify project
 gcloud config set project cbse-learning-platform
+gcloud config get-value project
 ```
 
-### Problem: Docker Build Fails
+---
 
-**Solution**:
+### Issue: Docker Build Fails
+
+#### WHAT
+Container build errors.
+
+#### WHY
+Docker not running, missing dependencies, or syntax errors.
+
+#### HOW to Fix
 ```bash
-# Make sure Docker is running
+# Check Docker is running
 docker info
 
-# If on Linux, ensure you're in docker group
+# On Linux, ensure user is in docker group
 sudo usermod -aG docker $USER
-# Then log out and log back in
+# Log out and back in
+
+# Rebuild with no cache
+docker build --no-cache -t IMAGE_NAME .
 ```
 
-### Problem: Cloud Run Deployment Fails
+---
 
-**Solution**:
+### Issue: Cloud Run Deployment Fails
+
+#### WHAT
+Deployment errors or service not starting.
+
+#### WHY
+Image issues, configuration errors, or resource limits.
+
+#### HOW to Fix
 ```bash
 # Check logs
-gcloud run services logs read cbse-learning-app --region=asia-south1
+gcloud run services logs read cbse-learning-app \
+  --region=asia-south1 --limit=50
 
 # Check service status
-gcloud run services describe cbse-learning-app --region=asia-south1
+gcloud run services describe cbse-learning-app \
+  --region=asia-south1
+
+# Verify image exists
+gcloud artifacts docker images list \
+  asia-south1-docker.pkg.dev/$PROJECT_ID/cbse-app
 ```
 
-### Problem: API Returns 500 Error
+---
 
-**Solution**:
-1. Check application logs:
-   ```bash
-   gcloud run services logs read cbse-learning-app --region=asia-south1 --limit=50
-   ```
-2. Verify environment variables are set correctly
+### Issue: API Returns 500 Error
+
+#### WHAT
+Internal server errors from the application.
+
+#### WHY
+Missing environment variables, database connection issues, or code bugs.
+
+#### HOW to Fix
+1. Check application logs for stack trace
+2. Verify all environment variables are set
 3. Check if required APIs are enabled
+4. Test with `AI_PROVIDER=mock` to isolate AI issues
 
-### Problem: Firebase Authentication Not Working
+---
 
-**Solution**:
-1. Verify Firebase credentials are uploaded to Secret Manager
-2. Check that Cloud Run has access to the secret
+### Issue: Firebase Authentication Not Working
+
+#### WHAT
+Users can't sign in or token verification fails.
+
+#### WHY
+Missing credentials, wrong project, or misconfigured Firebase.
+
+#### HOW to Fix
+1. Verify Firebase credentials in Secret Manager
+2. Check Cloud Run has access to secret
 3. Verify Firebase project is linked to GCP project
+4. Check Firebase Console for auth errors
 
-### Problem: Vertex AI Returns Errors
+---
 
-**Solution**:
-1. Verify Vertex AI API is enabled
-2. Check service account has `aiplatform.user` role
-3. Try using `AI_PROVIDER=mock` to test without AI
+### Issue: Slow Response Times
 
-### Problem: Budget Exceeded
+#### WHAT
+API requests taking too long.
 
-**Solution**:
-1. Set `min-instances=0` to scale to zero when idle
-2. Use `AI_PROVIDER=mock` instead of Vertex AI
-3. Delete unused resources:
-   ```bash
-   # Delete Cloud Run service
-   gcloud run services delete cbse-learning-app --region=asia-south1
-   ```
+#### WHY
+Cold starts, insufficient resources, or slow AI responses.
 
-### Problem: Slow Response Times
+#### HOW to Fix
+```bash
+# Option 1: Accept cold starts (free)
+# First request after idle takes 2-5 seconds
 
-**Solution**:
-1. Increase memory/CPU:
-   ```bash
-   gcloud run deploy cbse-learning-app --memory=1Gi --cpu=2
-   ```
-2. Set `min-instances=1` to avoid cold starts (increases cost)
+# Option 2: Keep instance warm (~Rs.1500-3000/month)
+gcloud run services update cbse-learning-app \
+  --region=asia-south1 --min-instances=1
+
+# Option 3: Increase resources
+gcloud run services update cbse-learning-app \
+  --region=asia-south1 --memory=1Gi --cpu=2
+```
+
+---
+
+### Issue: Budget Exceeded
+
+#### WHAT
+Spending more than expected.
+
+#### WHY
+Too many instances, AI usage, or storage costs.
+
+#### HOW to Fix
+```bash
+# Scale to zero when idle
+gcloud run services update cbse-learning-app \
+  --region=asia-south1 --min-instances=0
+
+# Use mock AI provider
+gcloud run services update cbse-learning-app \
+  --region=asia-south1 --update-env-vars="AI_PROVIDER=mock"
+
+# Delete unused resources
+gcloud run services delete cbse-learning-app \
+  --region=asia-south1 --quiet
+```
 
 ---
 
@@ -1235,7 +1704,6 @@ gcloud projects describe $PROJECT_ID
 
 # Delete everything (if needed)
 gcloud run services delete cbse-learning-app --region=asia-south1 --quiet
-gcloud artifacts docker images delete asia-south1-docker.pkg.dev/$PROJECT_ID/cbse-app/backend --quiet
 gcloud artifacts repositories delete cbse-app --location=asia-south1 --quiet
 ```
 
@@ -1243,32 +1711,37 @@ gcloud artifacts repositories delete cbse-app --location=asia-south1 --quiet
 
 ## Summary
 
-You have now:
+This 4W+H guide covered 13 phases:
 
-1. Created a Google account
-2. Set up GCP with free trial credits
-3. Created a project with budget alerts
-4. Installed all required tools
-5. Deployed the CBSE Learning Platform to Cloud Run
-6. Set up Firebase Authentication
-7. Configured Firestore database
-8. Set up Cloud Storage for PDFs
-9. Configured Vertex AI for AI features
-10. Set up CI/CD for automatic deployments
-11. Uploaded NCERT content
-12. Learned how to monitor and maintain the application
+| Phase | WHAT | WHY | Time |
+|-------|------|-----|------|
+| 1 | Account Creation | Foundation for all services | 15 min |
+| 2 | Project Setup | Isolate resources and billing | 10 min |
+| 3 | Tool Installation | Enable CLI operations | 20 min |
+| 4 | Repository Setup | Get source code | 5 min |
+| 5 | Container Registry | Store Docker images | 10 min |
+| 6 | Cloud Run Deployment | Host the application | 15 min |
+| 7 | Firebase Setup | Authentication service | 15 min |
+| 8 | Database Configuration | Data persistence | 10 min |
+| 9 | Storage Setup | File storage | 10 min |
+| 10 | AI Configuration | Enable AI features | 15 min |
+| 11 | CI/CD Pipeline | Automate deployments | 15 min |
+| 12 | Content Upload | Add CBSE content | 20 min |
+| 13 | Monitoring | Track health and costs | 10 min |
 
-**Your application is now live and ready for students to use!**
+**Total Time**: 2-4 hours
+
+**Your CBSE Learning Platform is now live and ready for students!**
 
 ---
 
 ## Next Steps
 
-1. **Share with students**: Give them the Cloud Run URL
-2. **Upload more content**: Add more chapters and subjects
-3. **Customize**: Modify the frontend for your school's branding
-4. **Scale**: Increase resources as usage grows
-5. **Feedback**: Collect student feedback and iterate
+1. **Share with students**: Distribute the Cloud Run URL
+2. **Upload more content**: Add chapters for other subjects
+3. **Customize branding**: Modify frontend for your school
+4. **Scale as needed**: Increase resources when usage grows
+5. **Collect feedback**: Iterate based on student input
 
 ---
 
@@ -1277,8 +1750,9 @@ You have now:
 - **GCP Documentation**: https://cloud.google.com/docs
 - **Cloud Run Guide**: https://cloud.google.com/run/docs
 - **Firebase Docs**: https://firebase.google.com/docs
+- **Replicate Docs**: https://replicate.com/docs
 - **Stack Overflow**: https://stackoverflow.com/questions/tagged/google-cloud-platform
 
 ---
 
-*This guide was created for the CBSE Learning Platform project. Last updated: December 2024*
+*This 4W+H guide was created for the CBSE Learning Platform project. Last updated: December 2024*
