@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "cbse-learning-platform"
+version = "1.1.0"
+description = "CBSE Learning Platform - Low-Cost Edition with Firebase and Replicate AI"
+authors = ["Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = {extras = ["standard"], version = "^0.127.0"}
+pyjwt = "^2.10.1"
+python-dotenv = "^1.2.1"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+pydantic-settings = "^2.12.0"
+uuid6 = "^2025.0.1"
+bcrypt = "^5.0.0"
+pypdf = "^5.0.0"
+firebase-admin = "^7.1.0"
+replicate = "^0.25.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
