@@ -89,7 +89,69 @@ The CBSE Learning Platform is an AI-powered educational application designed for
 
 ---
 
+## Cost Summary by Phase
+
+*Pricing as of December 2024, region: asia-south1 (Mumbai). Prices may vary.*
+
+| Phase | Setup Cost | Monthly Cost | Free Tier | Cost Reduction Alternative |
+|-------|------------|--------------|-----------|---------------------------|
+| 1. Account Creation | Rs.0 | Rs.0 | $300 credits (90 days) | Use new account for fresh credits |
+| 2. Project Setup | Rs.0 | Rs.0 | Unlimited projects | Separate dev/prod projects |
+| 3. Tool Installation | Rs.0 | Rs.0 | All tools free | Use Cloud Shell (free) |
+| 4. Repository Setup | Rs.0 | Rs.0 | GitHub free tier | Use GitLab/Bitbucket free |
+| 5. Container Registry | Rs.0 | Rs.5-50/mo | ~0.5GB free | Use Docker Hub public |
+| 6. Cloud Run | Rs.0 | Rs.0-500/mo | 2M requests/mo free | min-instances=0, low memory |
+| 7. Firebase Auth | Rs.0 | Rs.0 | 50K MAU free | Avoid SMS/phone auth |
+| 8. Firestore | Rs.0 | Rs.0-200/mo | 50K reads/day free | Denormalize, cache reads |
+| 9. Cloud Storage | Rs.0 | Rs.0-100/mo | 5GB (US regions) | Compress files, use CDN |
+| 10. AI (Replicate) | Rs.0 | Rs.50-500/mo | $5 free credits | Use mock provider, cache |
+| 11. CI/CD | Rs.0 | Rs.0-100/mo | 120 min/day free | Build locally, use GitHub Actions |
+| 12. Content Upload | Rs.0 | Rs.0 | N/A | Process offline |
+| 13. Monitoring | Rs.0 | Rs.0-50/mo | Basic metrics free | Reduce log retention |
+
+**Total Estimated Monthly Cost**:
+- **Development/Testing**: Rs.0 (using free tiers + mock AI)
+- **Small Production** (50 users): Rs.100-300/mo
+- **Medium Production** (200 users): Rs.500-1000/mo
+
+### Key Cost Drivers (What Actually Moves Your Bill)
+
+| Cost Driver | Impact | How to Control |
+|-------------|--------|----------------|
+| Cloud Run min-instances | High | Set to 0 (accept cold starts) |
+| AI API calls | High | Use mock for testing, cache responses |
+| Firestore reads | Medium | Denormalize data, batch reads |
+| Cloud Storage egress | Medium | Use CDN, compress files |
+| Cloud Logging | Low-Medium | Set log level to WARN in prod |
+| Network egress | Low | Keep data in same region |
+
+### Warning: Hidden Cost Traps
+
+1. **Region Matters**: Free tiers are often US-only. asia-south1 may not qualify for all free quotas.
+2. **Logging Costs**: Debug logs can accumulate quickly. Set retention to 7 days in prod.
+3. **Egress Fees**: Serving large files from Cloud Run is expensive. Use Cloud Storage + CDN.
+4. **AI Abuse**: Public endpoints without auth can be abused, causing unexpected AI costs.
+
+---
+
 ## Phase 1: Account Creation
+
+### COST for Phase 1
+
+| Item | Current Cost | Free Tier | Ongoing Cost |
+|------|--------------|-----------|--------------|
+| Google Account | Rs.0 | Forever free | Rs.0 |
+| GCP Account | Rs.0 | $300 credits (90 days) | Rs.0 until you exceed free tier |
+| Card Verification | Rs.2 (refunded) | N/A | Rs.0 |
+
+**Cost Reduction Alternatives**:
+1. **Use a new Google account** for fresh $300 credits if your existing account already used the trial
+2. **Stay on Firebase Spark plan** (no billing) if you only need Firebase Auth + Firestore (but can't use Cloud Run)
+3. **Use multiple accounts** for different projects to maximize free credits (check Google's terms)
+
+**When to Upgrade**: Only enable billing when you need Cloud Run or Artifact Registry. Firebase-only projects can stay on Spark plan indefinitely.
+
+---
 
 ### Step 1.1: Create Google Account
 
@@ -224,6 +286,26 @@ gcloud auth list
 ---
 
 ## Phase 2: Project Setup
+
+### COST for Phase 2
+
+| Item | Current Cost | Free Tier | Ongoing Cost |
+|------|--------------|-----------|--------------|
+| Creating Projects | Rs.0 | Unlimited projects | Rs.0 |
+| Budget Alerts | Rs.0 | Unlimited alerts | Rs.0 |
+| Enabling APIs | Rs.0 | Free to enable | Rs.0 (usage may cost) |
+
+**Cost Reduction Alternatives**:
+1. **Separate dev/prod projects** - Isolate experiments from production to prevent dev costs affecting prod budget
+2. **Only enable APIs you need** - Don't enable Vertex AI, BigQuery unless required
+3. **Set aggressive budget alerts** - Set at Rs.500, Rs.800, Rs.1000 to catch issues early
+4. **Restrict IAM permissions** - Only allow yourself to enable new APIs to prevent accidental enablement
+
+**When to Upgrade**: Projects themselves are free. Costs come from the services you use within them.
+
+**Pro Tip**: Create a "sandbox" project for experiments with a Rs.100 budget to test without risk.
+
+---
 
 ### Step 2.1: Create GCP Project
 
@@ -372,6 +454,25 @@ gcloud services list --enabled | grep -E "(run|artifact|firestore|storage)"
 ---
 
 ## Phase 3: Tool Installation
+
+### COST for Phase 3
+
+| Item | Current Cost | Free Tier | Ongoing Cost |
+|------|--------------|-----------|--------------|
+| Google Cloud SDK | Rs.0 | Forever free | Rs.0 |
+| Docker Desktop | Rs.0 | Free for personal use | Rs.0 (paid for enterprise) |
+| Git | Rs.0 | Forever free | Rs.0 |
+
+**Cost Reduction Alternatives**:
+1. **Use Google Cloud Shell** - Free browser-based terminal with gcloud pre-installed (avoid local installation)
+2. **Use Podman instead of Docker** - 100% free, no licensing concerns
+3. **Build in Cloud Build** - Skip local Docker entirely, build directly in cloud (uses free tier minutes)
+
+**When to Upgrade**: These tools are free. Docker Desktop requires paid license only for large enterprises (>250 employees).
+
+**Pro Tip**: Cloud Shell gives you a free VM with 5GB persistent storage - great for quick deployments without local setup.
+
+---
 
 ### Step 3.1: Install Google Cloud SDK
 
@@ -558,6 +659,29 @@ git --version
 
 ## Phase 4: Repository Setup
 
+### COST for Phase 4
+
+| Item | Current Cost | Free Tier | Ongoing Cost |
+|------|--------------|-----------|--------------|
+| GitHub Repository | Rs.0 | Unlimited public repos | Rs.0 |
+| Cloning Code | Rs.0 | Unlimited | Rs.0 |
+| Environment Config | Rs.0 | N/A | Rs.0 |
+
+**Cost Reduction Alternatives**:
+1. **Use GitHub free tier** - Unlimited public repositories, 500MB packages storage
+2. **Use GitLab/Bitbucket** - Similar free tiers, good alternatives
+3. **Self-host Gitea** - Free, but requires server (not recommended for cost savings)
+
+**Security Cost Risk**: Accidentally committing secrets (API keys, credentials) can lead to:
+- Leaked Replicate tokens = unauthorized AI usage = unexpected bills
+- Leaked Firebase credentials = database abuse = Firestore costs
+
+**When to Upgrade**: GitHub free tier is sufficient for most projects. Paid plans needed only for private repos with large teams.
+
+**Pro Tip**: Use `.gitignore` to exclude `.env` files. Store secrets only in Secret Manager.
+
+---
+
 ### Step 4.1: Clone Repository
 
 #### WHAT
@@ -661,6 +785,38 @@ cat .env | grep AI_PROVIDER
 ---
 
 ## Phase 5: Container Registry
+
+### COST for Phase 5
+
+| Item | Current Cost | Free Tier | Ongoing Cost |
+|------|--------------|-----------|--------------|
+| Artifact Registry Storage | Rs.0 setup | ~0.5GB free | Rs.1.70/GB/month after free tier |
+| Image Pulls | Rs.0 | Free within GCP | Rs.0 (same region) |
+| Network Egress | Rs.0 | Free within GCP | Rs.8-12/GB outside GCP |
+
+**Cost Reduction Alternatives**:
+1. **Optimize Docker images** - Use slim base images (python:3.11-slim vs python:3.11) to reduce storage
+2. **Use multi-stage builds** - Final image contains only runtime, not build tools
+3. **Delete old images** - Set up lifecycle policies to auto-delete images older than 30 days
+4. **Use Docker Hub public** - Free unlimited public images (but slower pulls from GCP)
+5. **Build with Cloud Build** - Images stored directly, no local push bandwidth
+
+**Image Size Impact**:
+| Base Image | Size | Monthly Cost (10 versions) |
+|------------|------|---------------------------|
+| python:3.11 | ~1GB | Rs.17/month |
+| python:3.11-slim | ~150MB | Rs.2.5/month |
+| python:3.11-alpine | ~50MB | Rs.0.85/month |
+
+**When to Upgrade**: Free tier is usually sufficient. Costs increase with many large images or frequent deployments.
+
+**Pro Tip**: Add this to your Dockerfile to reduce image size:
+```dockerfile
+FROM python:3.11-slim
+# Instead of FROM python:3.11
+```
+
+---
 
 ### Step 5.1: Create Artifact Registry Repository
 
@@ -771,6 +927,47 @@ gcloud artifacts docker images list \
 
 ## Phase 6: Cloud Run Deployment
 
+### COST for Phase 6
+
+| Item | Current Cost | Free Tier | Ongoing Cost |
+|------|--------------|-----------|--------------|
+| CPU | Rs.0 | 180,000 vCPU-seconds/month | Rs.0.0024/vCPU-second after |
+| Memory | Rs.0 | 360,000 GiB-seconds/month | Rs.0.00025/GiB-second after |
+| Requests | Rs.0 | 2 million requests/month | Rs.0.40/million after |
+| Networking | Rs.0 | 1GB egress/month | Rs.0.12/GB after |
+
+**This is the LARGEST cost driver in your stack!**
+
+**Cost Reduction Alternatives**:
+1. **Set min-instances=0** - CRITICAL! This enables scale-to-zero (no cost when idle)
+2. **Use 256Mi memory** instead of 512Mi - Halves memory cost
+3. **Enable CPU throttling** - CPU only allocated during request processing
+4. **Set max-instances=2** - Prevents runaway scaling during traffic spikes
+5. **Use concurrency=80** - Handle more requests per instance
+6. **Avoid always-on** - Don't set min-instances > 0 unless you need instant response
+
+**Cost Comparison (50 users, 1000 requests/day)**:
+| Configuration | Monthly Cost |
+|---------------|--------------|
+| min-instances=0, 256Mi | Rs.0-50 |
+| min-instances=0, 512Mi | Rs.0-100 |
+| min-instances=1, 512Mi | Rs.500-800 |
+| min-instances=2, 1Gi | Rs.1500-2500 |
+
+**Cold Start Trade-off**: min-instances=0 means first request after idle takes 2-5 seconds. For educational apps, this is usually acceptable.
+
+**When to Upgrade**: Only increase min-instances if users complain about slow first loads. Start with 0 and monitor.
+
+**Pro Tip**: Use this exact deploy command for lowest cost:
+```bash
+gcloud run deploy cbse-learning-app \
+  --min-instances=0 --max-instances=2 \
+  --memory=256Mi --cpu=1 --cpu-throttling \
+  --concurrency=80
+```
+
+---
+
 ### Step 6.1: Deploy Application
 
 #### WHAT
@@ -861,6 +1058,36 @@ echo "Open in browser: $APP_URL/docs"
 ---
 
 ## Phase 7: Firebase Setup
+
+### COST for Phase 7
+
+| Item | Current Cost | Free Tier | Ongoing Cost |
+|------|--------------|-----------|--------------|
+| Email/Password Auth | Rs.0 | 50,000 MAU free | Rs.0 (within free tier) |
+| Google Sign-In | Rs.0 | 50,000 MAU free | Rs.0 (within free tier) |
+| Phone Auth (SMS) | Rs.0 | 10 SMS/day free | Rs.0.06/SMS after (EXPENSIVE!) |
+| Anonymous Auth | Rs.0 | Unlimited | Rs.0 |
+
+**MAU = Monthly Active Users** (users who sign in at least once per month)
+
+**Cost Reduction Alternatives**:
+1. **Use Email/Password only** - Completely free up to 50K MAU
+2. **AVOID Phone/SMS Auth** - This is the #1 hidden cost trap! 10 SMS/day free, then Rs.0.06/SMS
+3. **Use Google Sign-In** - Free and reduces friction for users
+4. **Avoid Firebase Extensions** - Many extensions have hidden costs
+
+**Phone Auth Cost Example**:
+| Users | SMS/month | Monthly Cost |
+|-------|-----------|--------------|
+| 50 | 50 | Rs.0 (within free) |
+| 500 | 500 | Rs.29/month |
+| 5000 | 5000 | Rs.299/month |
+
+**When to Upgrade**: Firebase Auth free tier (50K MAU) is sufficient for most schools. Only pay if you exceed 50K monthly active users.
+
+**Pro Tip**: Disable phone authentication in Firebase Console unless absolutely required. Use email + Google Sign-In instead.
+
+---
 
 ### Step 7.1: Create Firebase Project
 
@@ -997,6 +1224,55 @@ gcloud secrets list
 
 ## Phase 8: Database Configuration
 
+### COST for Phase 8
+
+| Item | Current Cost | Free Tier | Ongoing Cost |
+|------|--------------|-----------|--------------|
+| Document Reads | Rs.0 | 50,000/day | Rs.0.06/100K reads after |
+| Document Writes | Rs.0 | 20,000/day | Rs.0.18/100K writes after |
+| Document Deletes | Rs.0 | 20,000/day | Rs.0.02/100K deletes after |
+| Storage | Rs.0 | 1 GB | Rs.0.18/GB/month after |
+| Network Egress | Rs.0 | 10 GB/month | Rs.0.12/GB after |
+
+**Cost Reduction Alternatives**:
+1. **Denormalize data** - Store related data together to reduce reads (1 read vs 5 reads)
+2. **Use subcollections wisely** - Avoid deep nesting that requires multiple reads
+3. **Batch writes** - Group multiple writes into batches (counts as 1 write per doc)
+4. **Cache on client** - Use Firestore offline persistence to reduce reads
+5. **Avoid real-time listeners on large collections** - Each document change = 1 read
+
+**Read Cost Example (Educational App)**:
+| Operation | Reads/User/Day | 50 Users | 200 Users |
+|-----------|----------------|----------|-----------|
+| Login + Profile | 3 | 150 | 600 |
+| View Progress | 5 | 250 | 1000 |
+| Load Quiz | 10 | 500 | 2000 |
+| **Total** | **18** | **900** | **3600** |
+
+With 50K free reads/day, you can support ~2,700 active users before paying.
+
+**When to Upgrade**: Free tier (50K reads/day) supports most small-medium schools. Monitor usage in Firebase Console > Usage tab.
+
+**Pro Tip**: Structure data to minimize reads:
+```javascript
+// BAD: 5 reads
+users/{userId}
+users/{userId}/progress
+users/{userId}/quizzes
+users/{userId}/doubts
+users/{userId}/settings
+
+// GOOD: 1 read (denormalized)
+users/{userId} {
+  profile: {...},
+  progress: {...},
+  recentQuizzes: [...],
+  settings: {...}
+}
+```
+
+---
+
 ### Step 8.1: Create Firestore Database
 
 #### WHAT
@@ -1107,6 +1383,55 @@ Firebase Console > Firestore > Rules.
 
 ## Phase 9: Storage Setup
 
+### COST for Phase 9
+
+| Item | Current Cost | Free Tier | Ongoing Cost |
+|------|--------------|-----------|--------------|
+| Storage | Rs.0 | 5 GB (US regions only!) | Rs.0.02/GB/month (Standard) |
+| Class A Operations (write) | Rs.0 | 5,000/month | Rs.0.05/10K ops |
+| Class B Operations (read) | Rs.0 | 50,000/month | Rs.0.004/10K ops |
+| Network Egress | Rs.0 | 1 GB/month | Rs.0.12/GB |
+
+**WARNING: Free tier is US regions only!** asia-south1 does NOT qualify for the 5GB free storage.
+
+**Cost Reduction Alternatives**:
+1. **Use US region for storage** - If latency is acceptable, use us-central1 for free tier
+2. **Compress files** - Use PDF compression, image optimization before upload
+3. **Use Cloud CDN** - Cache frequently accessed files to reduce egress costs
+4. **Use Nearline/Coldline** - For rarely accessed files (Rs.0.01/GB vs Rs.0.02/GB)
+5. **Set lifecycle policies** - Auto-delete old files after 90 days
+
+**Storage Class Comparison**:
+| Class | Cost/GB/month | Best For |
+|-------|---------------|----------|
+| Standard | Rs.0.02 | Frequently accessed (PDFs, images) |
+| Nearline | Rs.0.01 | Monthly access (backups) |
+| Coldline | Rs.0.004 | Quarterly access (archives) |
+| Archive | Rs.0.0012 | Yearly access (compliance) |
+
+**Cost Example (Educational Content)**:
+| Content | Size | Monthly Cost (asia-south1) |
+|---------|------|---------------------------|
+| 100 NCERT PDFs | 500 MB | Rs.0.01 |
+| 1000 Images | 2 GB | Rs.0.04 |
+| Video Thumbnails | 500 MB | Rs.0.01 |
+| **Total** | **3 GB** | **Rs.0.06** |
+
+**When to Upgrade**: Storage costs are minimal. Focus on egress costs - serving large files directly from Cloud Run is expensive.
+
+**Pro Tip**: Serve files via signed URLs from Cloud Storage instead of proxying through Cloud Run:
+```python
+# BAD: Proxy through Cloud Run (egress from Cloud Run)
+@app.get("/pdf/{file}")
+def get_pdf(file): return FileResponse(download_from_storage(file))
+
+# GOOD: Signed URL (egress from Cloud Storage)
+@app.get("/pdf/{file}")
+def get_pdf_url(file): return {"url": generate_signed_url(file)}
+```
+
+---
+
 ### Step 9.1: Create Cloud Storage Bucket
 
 #### WHAT
@@ -1171,6 +1496,57 @@ gsutil ls gs://cbse-learning-platform-storage/
 ---
 
 ## Phase 10: AI Configuration
+
+### COST for Phase 10
+
+| Provider | Cost Model | Approximate Cost | Free Credits |
+|----------|------------|------------------|--------------|
+| Mock (Testing) | Rs.0 | Rs.0 | Unlimited |
+| Replicate (Llama 3.1 8B) | Per-second GPU | ~$0.05/million tokens | $5 signup |
+| Vertex AI (Gemini Flash) | Per-character | ~$0.0005/1K chars | $300 GCP credits |
+| OpenAI (GPT-4) | Per-token | ~$0.03/1K tokens | None |
+
+**This is the SECOND largest cost driver after Cloud Run!**
+
+**Cost Reduction Alternatives**:
+1. **Use Mock provider for development** - Rs.0 cost, returns placeholder responses
+2. **Use Replicate over Vertex AI** - 10x cheaper for similar quality
+3. **Cache AI responses** - Store common question answers in Firestore
+4. **Rate limit AI calls** - Limit free users to 5 AI calls/day
+5. **Use smaller models** - Llama 3.1 8B vs 70B (10x cheaper)
+6. **Batch similar questions** - Group similar doubts into one AI call
+
+**Cost Comparison (1000 AI calls/month)**:
+| Provider | Model | Monthly Cost |
+|----------|-------|--------------|
+| Mock | N/A | Rs.0 |
+| Replicate | Llama 3.1 8B | Rs.50-100 |
+| Replicate | Llama 3.1 70B | Rs.500-1000 |
+| Vertex AI | Gemini Flash | Rs.200-400 |
+| Vertex AI | Gemini Pro | Rs.500-1000 |
+| OpenAI | GPT-4 | Rs.2000-5000 |
+
+**Replicate Pricing Details**:
+- Charged per second of GPU time (not tokens)
+- Llama 3.1 8B: ~$0.0001/second on A40 GPU
+- Average request: 2-5 seconds = $0.0002-0.0005/request
+- 1000 requests ≈ $0.20-0.50 ≈ Rs.17-42
+
+**When to Upgrade**: Start with Mock for testing, then Replicate for production. Only use Vertex AI if you need Google's specific models or have GCP credits.
+
+**Pro Tip**: Implement response caching:
+```python
+# Check cache before calling AI
+cached = await firestore.get_cached_response(question_hash)
+if cached:
+    return cached  # Rs.0 cost
+
+# Only call AI for new questions
+response = await replicate.generate(question)
+await firestore.cache_response(question_hash, response)
+```
+
+---
 
 ### Step 10.1: Configure Replicate AI (Recommended)
 
@@ -1275,6 +1651,61 @@ GCP Console > Vertex AI.
 
 ## Phase 11: CI/CD Pipeline
 
+### COST for Phase 11
+
+| Item | Current Cost | Free Tier | Ongoing Cost |
+|------|--------------|-----------|--------------|
+| Cloud Build | Rs.0 | 120 build-minutes/day | Rs.0.003/build-minute after |
+| Build Storage | Rs.0 | Included in Artifact Registry | See Phase 5 |
+| GitHub Connection | Rs.0 | Free | Rs.0 |
+
+**Cost Reduction Alternatives**:
+1. **Build locally, push image** - Skip Cloud Build entirely, use local Docker
+2. **Use GitHub Actions** - 2000 minutes/month free (more than Cloud Build!)
+3. **Optimize build time** - Use Docker layer caching, smaller base images
+4. **Reduce build frequency** - Only build on main branch, not every PR
+5. **Use Cloud Build substitutions** - Avoid rebuilding unchanged layers
+
+**Build Time Comparison**:
+| Build Type | Time | Daily Builds | Monthly Cost |
+|------------|------|--------------|--------------|
+| Full rebuild | 5 min | 24 | Rs.0 (within free) |
+| Full rebuild | 5 min | 50 | Rs.45/month |
+| Cached rebuild | 2 min | 50 | Rs.0 (within free) |
+| Local build + push | 0 min | Unlimited | Rs.0 |
+
+**GitHub Actions Alternative** (Recommended for cost savings):
+```yaml
+# .github/workflows/deploy.yml
+name: Deploy to Cloud Run
+on:
+  push:
+    branches: [main]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: cbse-learning-app
+          region: asia-south1
+```
+GitHub Actions: 2000 min/month free vs Cloud Build: 120 min/day (~3600 min/month)
+
+**When to Upgrade**: Free tier is usually sufficient. Only pay if you have >24 builds/day or builds take >5 minutes.
+
+**Pro Tip**: Add Docker layer caching to reduce build time:
+```dockerfile
+# Cache dependencies layer
+COPY pyproject.toml poetry.lock ./
+RUN poetry install --no-root
+
+# Copy source (changes frequently)
+COPY . .
+```
+
+---
+
 ### Step 11.1: Connect GitHub Repository
 
 #### WHAT
@@ -1364,6 +1795,55 @@ Cloud Build > Triggers.
 
 ## Phase 12: Content Upload
 
+### COST for Phase 12
+
+| Item | Current Cost | Free Tier | Ongoing Cost |
+|------|--------------|-----------|--------------|
+| PDF Storage | Rs.0 | See Phase 9 | Rs.0.02/GB/month |
+| PDF Processing (AI) | Rs.0-50 | Depends on AI provider | See Phase 10 |
+| RAG Indexing | Rs.0 | SQLite FTS5 (local) | Rs.0 |
+| Embeddings (if used) | Rs.50-500 | None | EXPENSIVE! |
+
+**WARNING: Embeddings are a hidden cost trap!**
+
+**Cost Reduction Alternatives**:
+1. **Use SQLite FTS5 for search** - Free, local, no API calls (this project uses this!)
+2. **AVOID vector embeddings** - Embedding APIs charge per token and add up fast
+3. **Process PDFs offline** - Extract text locally before upload
+4. **Compress PDFs** - Smaller files = less storage cost
+5. **Batch uploads** - Upload during off-peak hours to avoid AI rate limits
+
+**Embedding Cost Comparison (100 NCERT chapters)**:
+| Method | Cost |
+|--------|------|
+| SQLite FTS5 (text search) | Rs.0 |
+| OpenAI Embeddings | Rs.500-1000 |
+| Vertex AI Embeddings | Rs.200-500 |
+| Local Sentence Transformers | Rs.0 (but slow) |
+
+**This project uses SQLite FTS5** - completely free text search without embeddings!
+
+**Content Processing Cost Example**:
+| Content | Storage | AI Processing | Total |
+|---------|---------|---------------|-------|
+| 10 PDFs (50MB) | Rs.0.001 | Rs.5 (Replicate) | Rs.5 |
+| 100 PDFs (500MB) | Rs.0.01 | Rs.50 (Replicate) | Rs.50 |
+| 1000 PDFs (5GB) | Rs.0.10 | Rs.500 (Replicate) | Rs.500 |
+
+**When to Upgrade**: Content upload is mostly one-time. Ongoing costs are minimal unless you frequently reprocess content.
+
+**Pro Tip**: Process PDFs locally and upload only the extracted text:
+```python
+# Process locally (Rs.0)
+import PyPDF2
+text = extract_text_from_pdf(pdf_path)
+
+# Upload text only (smaller, faster)
+upload_processed_text(text, metadata)
+```
+
+---
+
 ### Step 12.1: Upload NCERT PDFs
 
 #### WHAT
@@ -1434,6 +1914,59 @@ curl -X POST "$APP_URL/rag-agent/ask" \
 ---
 
 ## Phase 13: Monitoring
+
+### COST for Phase 13
+
+| Item | Current Cost | Free Tier | Ongoing Cost |
+|------|--------------|-----------|--------------|
+| Cloud Logging (ingestion) | Rs.0 | 50 GB/month | Rs.0.50/GB after |
+| Cloud Logging (storage) | Rs.0 | 30 days retention | Rs.0.01/GB/month after |
+| Cloud Monitoring | Rs.0 | Basic metrics free | Rs.0 for most use cases |
+| Alerting | Rs.0 | Unlimited policies | Rs.0 |
+| Uptime Checks | Rs.0 | 100 checks free | Rs.0.30/check after |
+
+**WARNING: Logging is a hidden cost trap!**
+
+**Cost Reduction Alternatives**:
+1. **Set log level to WARN/ERROR in production** - DEBUG logs can generate GBs of data
+2. **Reduce log retention** - Default 30 days is often too long, set to 7 days
+3. **Use structured logging** - Easier to filter, less storage
+4. **Exclude health check logs** - These generate noise every 30 seconds
+5. **Sample logs** - Log only 10% of requests in high-traffic scenarios
+
+**Log Volume Estimation**:
+| Log Level | Logs/Request | 1000 req/day | Monthly Volume |
+|-----------|--------------|--------------|----------------|
+| DEBUG | 50 lines | 50,000 | ~1.5 GB |
+| INFO | 10 lines | 10,000 | ~300 MB |
+| WARN | 2 lines | 2,000 | ~60 MB |
+| ERROR | 0.1 lines | 100 | ~3 MB |
+
+**Cost Example**:
+| Configuration | Monthly Log Volume | Monthly Cost |
+|---------------|-------------------|--------------|
+| DEBUG level, 30 days | 1.5 GB | Rs.0 (within free) |
+| DEBUG level, 30 days | 100 GB | Rs.25 |
+| INFO level, 7 days | 300 MB | Rs.0 |
+
+**When to Upgrade**: Free tier (50 GB/month) is sufficient for most apps. Only pay if you have high traffic or need long retention.
+
+**Pro Tip**: Configure log exclusion for health checks:
+```bash
+# Exclude health check logs (saves ~30% of log volume)
+gcloud logging sinks create exclude-health-checks \
+  --log-filter='NOT resource.labels.service_name="cbse-learning-app" OR NOT textPayload:"/health"' \
+  --destination=logging.googleapis.com/projects/$PROJECT_ID/locations/global/buckets/_Default
+```
+
+**Set log level in production**:
+```python
+# In config.py
+import logging
+logging.basicConfig(level=logging.WARN if APP_ENV == "production" else logging.DEBUG)
+```
+
+---
 
 ### Step 13.1: View Application Logs
 
